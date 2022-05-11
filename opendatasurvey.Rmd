@@ -1,0 +1,87 @@
+---
+title: "Open data survey"
+author: "Tomas Klingström"
+date: '2022-05-11'
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup_01, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# About this report
+This report is designed with two purposes in mind. 
+
+If read directly without opening the code chunks the report provides a comparative analysis of the State of Open Data survey 2021 published by Digital Science (https://doi.org/10.6084/m9.figshare.17081231) and a community specific survey to survey the State of Open Data and attitudes towards FAIR data policies conducted by the Pigweb consortium. The Pigweb study is built on the template provided by the State of Open Data Survey to maximise the comparability between the pig research community participating in Pigweb and the much larger study conducted by Digital Science and Springer Nature.
+
+Opening the code chunks provided in the document or downloading the github repository (https://github.com/SGBC/survey) enables researchers to copy the report and reuse it as a template for their own comparative studies. The document is divided into a number of code chunks with data pruning and functions at the top followed by the report with the code chunks generating data interspersed between them.
+
+
+```{r prep_01, echo=F, eval = F, message=FALSE, warning=FALSE}
+# install packages
+install.packages("Rtools")
+install.packages("knitr")
+install.packages("lattice")
+install.packages("tidyverse")
+install.packages("likert")
+install.packages("MASS")
+install.packages("psych")
+install.packages("viridis")
+install.packages("ggplot2")
+install.packages("here")
+install.packages("devtools")
+install.packages("rgr")
+install.packages("readxl")
+install.packages("ufs")
+install.packages("scramble")
+```
+
+
+```{r prep_02, echo=F, eval = F, message=FALSE, warning=FALSE}
+# set options
+options(stringsAsFactors = F)         # no automatic data transformation
+options("scipen" = 100, "digits" = 4) # suppress math annotation
+# install packages
+library(knitr)
+library(lattice)
+library(tidyverse)
+library(likert)
+library(MASS)
+library(psych)
+library(viridis)
+library(ggplot2)
+library(here)
+library(devtools)
+library(rgr)
+library(readxl)
+library(scramble)
+```
+```{r pruning_01, echo=F, eval = F, message=FALSE, warning=FALSE}
+
+pigw21 <- read_excel("pigw21.xlsx")
+sod21 <- read_excel("sod21.xlsx", skip = 1)
+
+#The below code chunks were used to ensure that data cannot be traced back to respondents. The data supplied with the github repository has already been treated with the below steps.
+
+#In the pigweb survey the last question was for respondents to provide their e-mail address for follow up questions. This is personal information which is not to be shared outside the limited timesap of the project.
+pigw21 = pigw21[1:(length(pigw21)-1)]
+
+#Apart from directly identifiable information it is important to ensure that combinations of information cannot be used to trace the respondents. In this case we have therefore decided to separate the respondent data from the rest of the survey and scramble the rows. Thereby combinations such as year of first publication and major source of finance cannot be used to identify respondents by a process of elimination.
+
+pigrespondents = dplyr::select(pigw21, 1:9)
+pigw21 = dplyr::select(pigw21, !1:9)
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
