@@ -62,25 +62,32 @@ library(writexl)
 
 #pigw21 <- read_excel("pigw21.xlsx")
 sod21 <- read_excel("sod21.xlsx", skip = 1)
+pigw21s <- read_excel("pigw21s.xlsx")
 
 #The below code chunks were used to ensure that data cannot be traced back to respondents. The data supplied with the github repository has already been treated with the below steps.
 
-#In the pigweb survey the last question was for respondents to provide their e-mail address for follow up questions. This is personal information which is not to be shared outside the limited timesap of the project.
-#pigw21 = pigw21[1:(length(pigw21)-1)]
+#In the pigweb survey the last question was for respondents to provide their e-mail address and organisation for follow up questions. This is personal information which is not to be shared outside the limited timesap of the project.
+#pigw21 = pigw21[1:(length(pigw21)-6)]
 
 #Apart from directly identifiable information it is important to ensure that combinations of information cannot be used to trace the respondents. In this case we have therefore decided to separate the respondent data from the rest of the survey and scramble the rows. Thereby combinations such as year of first publication and major source of finance cannot be used to identify respondents by a process of elimination.
-
-#This snippet take the first 9 columns of the pigw21 dataset, put them in a separate dataframe and shuffles each column.
+#
+#This snippet take the first 9 columns of the pigw21 dataset, put them in a separate dataframe and shuffles each column before putting it back together.
 #pigrespondents = dplyr::select(pigw21, 1:9)
 #pigw21 = dplyr::select(pigw21, !1:9)
 #pigrespondents = as.data.frame(lapply(pigrespondents, sample))
 #pigw21 = cbind(pigrespondents, pigw21)
 #write_xlsx(pigw21, path = "pigw21s.xlsx")
-pigw21s <- read_excel("pigw21s.xlsx")
+#The shuffled file is the file shared in the supplementary data and loaded at the start of this chunk. 
 
 ```
 
-## Including Plots
+## Data in the survey
+The questionnaire contain over 200 different answers per respondent and can be broken down into 6 different categories, information about the respondent, questions about the respondents research data, questions about the respondents usage of data and finally views on credit and recognition of data. There is also a final section on information about the respondent which is not publicly shared as it would provide the means to identify the respondents of the survey. There are four types of questions used in the survey and shown in this report.
+
+1. Likert scale questions, usually using done with a five point scale going from "I strongly disagree" to "I strongly agree". These are reported using an empirical cumulative distribution function with one graph each for the State of Open Data and Pigweb survey. Hypothesis testing with calculation of P-values are doing using the Kolmogorov-Smirnov test with the alternate hypothesis being that respondents are drawn from two populations with different preferences
+2. Non-numeric single choice questions, selecting between different options the respondent select the most fitting one. A frequency bar plot with the different alternatives is used to visualize these responses.
+3. Multiple choice questions, respondents may select multiple answers to the question.A frequency bar plot with the different alternatives is used to visualize these responses with the frequency being the number of respondents who selected an answer divided by the number of respondents.
+.
 
 You can also embed plots, for example:
 
