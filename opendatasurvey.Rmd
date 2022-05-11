@@ -21,7 +21,6 @@ Opening the code chunks provided in the document or downloading the github repos
 
 ```{r prep_01, echo=F, eval = F, message=FALSE, warning=FALSE}
 # install packages
-install.packages("Rtools")
 install.packages("knitr")
 install.packages("lattice")
 install.packages("tidyverse")
@@ -35,7 +34,8 @@ install.packages("devtools")
 install.packages("rgr")
 install.packages("readxl")
 install.packages("ufs")
-install.packages("scramble")
+install.packages("writexl")
+
 ```
 
 
@@ -56,23 +56,27 @@ library(here)
 library(devtools)
 library(rgr)
 library(readxl)
-library(scramble)
+library(writexl)
 ```
-```{r pruning_01, echo=F, eval = F, message=FALSE, warning=FALSE}
+```{r pruning_01, echo=T, eval = F, message=FALSE, warning=FALSE}
 
-pigw21 <- read_excel("pigw21.xlsx")
+#pigw21 <- read_excel("pigw21.xlsx")
 sod21 <- read_excel("sod21.xlsx", skip = 1)
 
 #The below code chunks were used to ensure that data cannot be traced back to respondents. The data supplied with the github repository has already been treated with the below steps.
 
 #In the pigweb survey the last question was for respondents to provide their e-mail address for follow up questions. This is personal information which is not to be shared outside the limited timesap of the project.
-pigw21 = pigw21[1:(length(pigw21)-1)]
+#pigw21 = pigw21[1:(length(pigw21)-1)]
 
 #Apart from directly identifiable information it is important to ensure that combinations of information cannot be used to trace the respondents. In this case we have therefore decided to separate the respondent data from the rest of the survey and scramble the rows. Thereby combinations such as year of first publication and major source of finance cannot be used to identify respondents by a process of elimination.
 
-pigrespondents = dplyr::select(pigw21, 1:9)
-pigw21 = dplyr::select(pigw21, !1:9)
-
+#This snippet take the first 9 columns of the pigw21 dataset, put them in a separate dataframe and shuffles each column.
+#pigrespondents = dplyr::select(pigw21, 1:9)
+#pigw21 = dplyr::select(pigw21, !1:9)
+#pigrespondents = as.data.frame(lapply(pigrespondents, sample))
+#pigw21 = cbind(pigrespondents, pigw21)
+#write_xlsx(pigw21, path = "pigw21s.xlsx")
+pigw21s <- read_excel("pigw21s.xlsx")
 
 ```
 
