@@ -117,10 +117,10 @@ sod21 = dplyr::select(sod21,!1)
 colnames(sod21Q1) = c('Q1')
 
 pigw21Q1 = as.data.frame(dplyr::select(pigw21, 1))
-pigw21Pile = cbind(pigw21Done, pigw21Q1)
+pigw21Pile = cbind(pigw21Pile, pigw21Q1)
 pigw21 = dplyr::select(pigw21,!1)
 
-Setting columnnames and storing the question
+#Setting columnnames and storing the question
 colnames(sod21Q1) = c('Q1')
 colnames(pigw21Q1) = c('Q1')
 Q1 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
