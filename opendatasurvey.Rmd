@@ -79,20 +79,56 @@ pigw21s <- read_excel("pigw21s.xlsx")
 #write_xlsx(pigw21, path = "pigw21s.xlsx")
 #The shuffled file is the file shared in the supplementary data and loaded at the start of this chunk. 
 
+sod21Done = dplyr::select(sod21, 1:9)
+pigw21Done = dplyr::select(pigw21,1:4)
+sod21 = dplyr::select(sod21, !1:9)
+pigw21 = dplyr::select(pigw21,!1:4)
+
 ```
 
 ## Data in the survey
-The questionnaire contain over 200 different answers per respondent and can be broken down into 6 different categories, information about the respondent, questions about the respondents research data, questions about the respondents usage of data and finally views on credit and recognition of data. There is also a final section on information about the respondent which is not publicly shared as it would provide the means to identify the respondents of the survey. There are four types of questions used in the survey and shown in this report.
+The questionnaire contain over 200 different answers per respondent and can be broken down into 6 different categories, information about the respondent, questions about the respondents research data, questions about the respondents usage of data and finally views on credit and recognition of data. There is also a final section on information about the respondent which is not publicly shared as it would provide the means to identify the respondents of the survey. There are three types of questions used in the survey and shown in this report.
 
-1. Likert scale questions, usually using done with a five point scale going from "I strongly disagree" to "I strongly agree". These are reported using an empirical cumulative distribution function with one graph each for the State of Open Data and Pigweb survey. Hypothesis testing with calculation of P-values are doing using the Kolmogorov-Smirnov test with the alternate hypothesis being that respondents are drawn from two populations with different preferences
-2. Non-numeric single choice questions, selecting between different options the respondent select the most fitting one. A frequency bar plot with the different alternatives is used to visualize these responses.
+1. Likert scale questions, usually with a five point scale going from "I strongly disagree" to "I strongly agree". These are reported using an empirical cumulative distribution function with one line each for the State of Open Data and the Pigweb survey. Hypothesis testing with calculation of P-values is done with a Kolmogorov-Smirnov test with the alternate hypothesis being that respondents are drawn from two populations with different preferences
+2. Single choice questions, selecting between different options the respondent select the most fitting one. A frequency bar plot with the different alternatives is used to visualize these responses.
 3. Multiple choice questions, respondents may select multiple answers to the question.A frequency bar plot with the different alternatives is used to visualize these responses with the frequency being the number of respondents who selected an answer divided by the number of respondents.
 .
 
-You can also embed plots, for example:
+```{r functions_01, echo=F, eval = F, message=FALSE, warning=FALSE}
+#The three types of functions to visualise data go here.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+#In the block below these each question is analysed. 
+#Note: Not all respondents answered all questions so frequencies need to have the actual number in the denominator.
+#Several single choice and multipel choice questions got "other" as a response and then the following column is the free text response, listing these responses separately would be good. 
+
+#An example file is in this folder.
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The below section is an example of "the old approach" where each chunk would contain all the necessary code, the idea is to split the logic so that data cleaning from surveys is done in the chunk and Dataframes with sorted data are sent along with the question names to the function generating graphs.
+
+```{r question_1, echo=T, eval = F, message=FALSE, warning=FALSE}
+Example of data analysis
+q121 = dplyr::select(sod21,10:18)
+
+respondentsPig = dplyr::select(pigweb,5:7,10:14)
+respondentsPig$source = 'pig'
+outPutNames= c('When was the last occasion that you published or submitted a manuscript to a journal?', 'In which year was your first peer-reviewed research article published?', 'Which of the following best describes your primary area of interest?','Yes, within my institution','Yes, within my country','Yes internationally','No', 'I dont know')
+colnames(respondentsSoD21) = c('Q1', 'Q2', 'Q3','Q4','Q5','Q6','Q7', 'Q8')
+colnames(respondentsPig) = c('Q1', 'Q2', 'Q3','Q4','Q5','Q6','Q7', 'Q8')
+
+# Question 1 'When was the last occasion that you published or submitted a manuscript to a journal?'
+#This section use dplyr:recode to convert the State of Open Data survey to numbers so we can treated responses as a Likert scale.
+#Values are the plotted from both surveys with GGplot and a two-sided Kolmogorov-Smirnov test is used to test the two-sided hypothesis that the
+#samples come from the same dataset (ie null hypothesis is that the two datasets come from the same distribution). 
+
+#unique(respondentsSoD21) #unique() is used to identify the unique answers of the question.
+respondentsSoD21$Q1 = dplyr::recode(respondentsSoD21$Q1, "Within the last year" = 1, "1-2 years ago" = 2, "3-5 years ago" = 3, "More than 5 years ago" = 4, "I have never submitted a manuscript to a journal" = 5)
+ggplot() +
+     geom_step(aes(x = as.numeric(Q1)), data = respondentsSoD21, stat = "ecdf") + 
+     geom_step(aes(x = as.numeric(Q1)), data = respondentsPig, stat = "ecdf", color="#c78b90") +
+  scale_x_discrete("Time since most recent publication", limits = c("Within the last year", "1-2 years ago", "3-5 years ago", "More than five years ago"))
+
+ks.test(respondentsSod21Pub$Q1, respondentsPig$Q1, ifresult = FALSE) #Kolmogorov-Smirnov test for Q1
+
+```
+
