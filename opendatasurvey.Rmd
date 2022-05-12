@@ -169,3 +169,8 @@ ggplot() +
 
 ks.test(sod21Q2$Q2, pigw21Q2$Q2, ifresult = FALSE) #Kolmogorov-Smirnov test for Q2
 ```
+
+```{r question_3, echo=T, eval = F, message=FALSE, warning=FALSE}
+#So this is a single choice question with an "other".
+
+```
