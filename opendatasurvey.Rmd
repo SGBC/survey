@@ -58,11 +58,12 @@ library(rgr)
 library(readxl)
 library(writexl)
 ```
+
 ```{r pruning_01, echo=T, eval = F, message=FALSE, warning=FALSE}
 
 #pigw21 <- read_excel("pigw21.xlsx")
 sod21 <- read_excel("sod21.xlsx", skip = 1)
-pigw21s <- read_excel("pigw21s.xlsx")
+pigw21 <- read_excel("pigw21s.xlsx")
 
 #The below code chunks were used to ensure that data cannot be traced back to respondents. The data supplied with the github repository has already been treated with the below steps.
 
@@ -79,11 +80,12 @@ pigw21s <- read_excel("pigw21s.xlsx")
 #write_xlsx(pigw21, path = "pigw21s.xlsx")
 #The shuffled file is the file shared in the supplementary data and loaded at the start of this chunk. 
 
-sod21Done = dplyr::select(sod21, 1:9)
-pigw21Done = dplyr::select(pigw21,1:4)
+#This sets the Data Frames to start at the first question. Each code chunk take the columns corresponding to a question and pass it to the pile when done.
+sod21Pile = dplyr::select(sod21, 1:9)
 sod21 = dplyr::select(sod21, !1:9)
-pigw21 = dplyr::select(pigw21,!1:4)
 
+pigw21 = dplyr::select(pigw21,!1:4)
+pigw21Pile = dplyr::select(pigw21,1:4)
 ```
 
 ## Data in the survey
@@ -107,28 +109,63 @@ The questionnaire contain over 200 different answers per respondent and can be b
 The below section is an example of "the old approach" where each chunk would contain all the necessary code, the idea is to split the logic so that data cleaning from surveys is done in the chunk and Dataframes with sorted data are sent along with the question names to the function generating graphs.
 
 ```{r question_1, echo=T, eval = F, message=FALSE, warning=FALSE}
-Example of data analysis
-q121 = dplyr::select(sod21,10:18)
+#Data to be analysed in the chunk is moved to the Q1 dataframe and copied to the pile. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+sod21Q1 = as.data.frame(dplyr::select(sod21,1))
+sod21Pile = cbind(sod21Pile, sod21Q1)
+sod21 = dplyr::select(sod21,!1)
+colnames(sod21Q1) = c('Q1')
 
-respondentsPig = dplyr::select(pigweb,5:7,10:14)
-respondentsPig$source = 'pig'
-outPutNames= c('When was the last occasion that you published or submitted a manuscript to a journal?', 'In which year was your first peer-reviewed research article published?', 'Which of the following best describes your primary area of interest?','Yes, within my institution','Yes, within my country','Yes internationally','No', 'I dont know')
-colnames(respondentsSoD21) = c('Q1', 'Q2', 'Q3','Q4','Q5','Q6','Q7', 'Q8')
-colnames(respondentsPig) = c('Q1', 'Q2', 'Q3','Q4','Q5','Q6','Q7', 'Q8')
+pigw21Q1 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Done, pigw21Q1)
+pigw21 = dplyr::select(pigw21,!1)
 
-# Question 1 'When was the last occasion that you published or submitted a manuscript to a journal?'
-#This section use dplyr:recode to convert the State of Open Data survey to numbers so we can treated responses as a Likert scale.
-#Values are the plotted from both surveys with GGplot and a two-sided Kolmogorov-Smirnov test is used to test the two-sided hypothesis that the
-#samples come from the same dataset (ie null hypothesis is that the two datasets come from the same distribution). 
+Setting columnnames and storing the question
+colnames(sod21Q1) = c('Q1')
+colnames(pigw21Q1) = c('Q1')
+Q1 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
 
-#unique(respondentsSoD21) #unique() is used to identify the unique answers of the question.
-respondentsSoD21$Q1 = dplyr::recode(respondentsSoD21$Q1, "Within the last year" = 1, "1-2 years ago" = 2, "3-5 years ago" = 3, "More than 5 years ago" = 4, "I have never submitted a manuscript to a journal" = 5)
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question.
+sod21Q1$Q1 = dplyr::recode(sod21Q1$Q1, "Within the last year" = 1, "1-2 years ago" = 2, "3-5 years ago" = 3, "More than 5 years ago" = 4, "I have never submitted a manuscript to a journal" = 5)
+
+#This would be the data going into the function for ECDFs. The sod21Q1, pigw21Q1 and X-axis labels.For some reason I am having issues with errors here. The code is a bit messed up right now because I botched the fixing. The X scale being taken from Q1 would be a nice touch.
+
 ggplot() +
-     geom_step(aes(x = as.numeric(Q1)), data = respondentsSoD21, stat = "ecdf") + 
-     geom_step(aes(x = as.numeric(Q1)), data = respondentsPig, stat = "ecdf", color="#c78b90") +
-  scale_x_discrete("Time since most recent publication", limits = c("Within the last year", "1-2 years ago", "3-5 years ago", "More than five years ago"))
+     geom_step(aes(x = as.numeric(Q1)), data = sod21Q1, stat = "ecdf") + 
+     geom_step(aes(x = as.numeric(Q1)), data = pigw21Q1, stat = "ecdf", color="#c78b90") +
+    scale_x_discrete("Time since most recent publication", limits = c("Within the last year", "1-2 years ago", "3-5 years ago", "More than five years ago"))
 
-ks.test(respondentsSod21Pub$Q1, respondentsPig$Q1, ifresult = FALSE) #Kolmogorov-Smirnov test for Q1
-
+ks.test(sod21Q1$Q1, pigw21Q1$Q, ifresult = FALSE) #Kolmogorov-Smirnov test for Q1
 ```
 
+
+
+```{r question_2, echo=T, eval = F, message=FALSE, warning=FALSE}
+#Selecting question 2 which is now the first column of the sod21 and pigw21 dataframe and passing it to the pile
+sod21Q2 = as.data.frame(dplyr::select(sod21, 1))
+sod21Pile = cbind(sod21Pile, sod21Q2)
+sod21 = dplyr::select(sod21,!1)
+
+
+pigw21Q2 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Done, pigw21Q2)
+pigw21 = dplyr::select(pigw21,!1)
+
+Q2 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
+colnames(sod21Q2) = c('Q2')
+colnames(pigw21Q2) = c('Q2')
+
+#Necessary harmonisation of response formats, in this case we make sure it is numeric and remove rows with 0 in year of first publication.
+pigw21Q2$Q2=as.numeric(pigw21Q2$Q2)
+pigw21Q2$Q2 = subset(pigw21Q2$Q2, !Q2==0)
+
+
+#This would be the function where we pass sod21Q2, pigw21Q2, the column selection (ie named Q2 here) and the Xlab.
+ggplot() +
+     geom_step(aes(x = as.numeric(Q2)), data = sod21Q2, stat = "ecdf") + 
+     geom_step(aes(x = as.numeric(Q2)), data = pigw21Q2, stat = "ecdf", color="#c78b90") +
+  scale_x_continuous(limits = c(1990, 2022)) +
+  xlab("Year of first publication by respondent")
+
+ks.test(sod21Q2$Q2, pigw21Q2$Q2, ifresult = FALSE) #Kolmogorov-Smirnov test for Q2
+```
