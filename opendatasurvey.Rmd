@@ -148,7 +148,7 @@ sod21 = dplyr::select(sod21,!1)
 
 
 pigw21Q2 = as.data.frame(dplyr::select(pigw21, 1))
-pigw21Pile = cbind(pigw21Done, pigw21Q2)
+pigw21Pile = cbind(pigw21Pile, pigw21Q2)
 pigw21 = dplyr::select(pigw21,!1)
 
 Q2 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
