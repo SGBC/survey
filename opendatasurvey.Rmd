@@ -39,11 +39,11 @@ install.packages("writexl")
 ```
 
 
-```{r prep_02, echo=F, eval = F, message=FALSE, warning=FALSE}
+```{r prep_02, echo=F, eval = T, message=FALSE, warning=FALSE}
 # set options
 options(stringsAsFactors = F)         # no automatic data transformation
 options("scipen" = 100, "digits" = 4) # suppress math annotation
-# install packages
+
 library(knitr)
 library(lattice)
 library(tidyverse)
@@ -57,13 +57,15 @@ library(devtools)
 library(rgr)
 library(readxl)
 library(writexl)
+
+source("R/plotting_functions.R")
 ```
 
-```{r pruning_01, echo=T, eval = F, message=FALSE, warning=FALSE}
+```{r pruning_01, echo=T, eval = T, message=FALSE, warning=FALSE}
 
 #pigw21 <- read_excel("pigw21.xlsx")
 sod21 <- read_excel("sod21.xlsx", skip = 1)
-pigw21 <- read_excel("pigw21s.xlsx")
+pigw21 <- read_excel("pigw21.xlsx")
 
 #The below code chunks were used to ensure that data cannot be traced back to respondents. The data supplied with the github repository has already been treated with the below steps.
 
@@ -96,7 +98,7 @@ The questionnaire contain over 200 different answers per respondent and can be b
 3. Multiple choice questions, respondents may select multiple answers to the question.A frequency bar plot with the different alternatives is used to visualize these responses with the frequency being the number of respondents who selected an answer divided by the number of respondents.
 .
 
-```{r functions_01, echo=F, eval = F, message=FALSE, warning=FALSE}
+```{r functions_01, echo=F, eval = T, message=FALSE, warning=FALSE}
 #The three types of functions to visualise data go here.
 
 #In the block below these each question is analysed. 
@@ -108,7 +110,7 @@ The questionnaire contain over 200 different answers per respondent and can be b
 
 The below section is an example of "the old approach" where each chunk would contain all the necessary code, the idea is to split the logic so that data cleaning from surveys is done in the chunk and Dataframes with sorted data are sent along with the question names to the function generating graphs.
 
-```{r question_1, echo=T, eval = F, message=FALSE, warning=FALSE}
+```{r question_1, echo=T, eval = T, message=FALSE, warning=FALSE}
 #Data to be analysed in the chunk is moved to the Q1 dataframe and copied to the pile. The process is repeated for each question in it's respective chunk
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
 sod21Q1 = as.data.frame(dplyr::select(sod21,1))
@@ -126,51 +128,145 @@ colnames(pigw21Q1) = c('Q1')
 Q1 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
 
 #unique(sod21Q2) #unique() is used to identify the unique answers of the question.
-sod21Q1$Q1 = dplyr::recode(sod21Q1$Q1, "Within the last year" = 1, "1-2 years ago" = 2, "3-5 years ago" = 3, "More than 5 years ago" = 4, "I have never submitted a manuscript to a journal" = 5)
 
 #This would be the data going into the function for ECDFs. The sod21Q1, pigw21Q1 and X-axis labels.For some reason I am having issues with errors here. The code is a bit messed up right now because I botched the fixing. The X scale being taken from Q1 would be a nice touch.
 
-ggplot() +
-     geom_step(aes(x = as.numeric(Q1)), data = sod21Q1, stat = "ecdf") + 
-     geom_step(aes(x = as.numeric(Q1)), data = pigw21Q1, stat = "ecdf", color="#c78b90") +
-    scale_x_discrete("Time since most recent publication", limits = c("Within the last year", "1-2 years ago", "3-5 years ago", "More than five years ago"))
+Q1_levels <- c("Within the last year", "1-2 years ago",
+               "3-5 years ago", "More than 5 years ago",
+               "I have never submitted a manuscript to a journal")
 
-ks.test(sod21Q1$Q1, pigw21Q1$Q, ifresult = FALSE) #Kolmogorov-Smirnov test for Q1
+Q1_data <- format_question_likert(sod21Q1$Q1,
+                                  pigw21Q1$Q1,
+                                  Q1_levels)
+
+plot_likert(Q1_data,
+            Q1_levels,
+            Q1,
+            "Time since most recent publication")
+
+ks.test(Q1_data$response[Q1_data$survey == "SoD"],
+        Q1_data$response[Q1_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q1
 ```
 
 
 
-```{r question_2, echo=T, eval = F, message=FALSE, warning=FALSE}
+```{r question_2, echo=T, eval = T, message=FALSE, warning=FALSE}
 #Selecting question 2 which is now the first column of the sod21 and pigw21 dataframe and passing it to the pile
 sod21Q2 = as.data.frame(dplyr::select(sod21, 1))
 sod21Pile = cbind(sod21Pile, sod21Q2)
 sod21 = dplyr::select(sod21,!1)
 
-
 pigw21Q2 = as.data.frame(dplyr::select(pigw21, 1))
-pigw21Pile = cbind(pigw21Done, pigw21Q2)
+pigw21Pile = cbind(pigw21Pile, pigw21Q2)
 pigw21 = dplyr::select(pigw21,!1)
 
-Q2 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
+Q2 = 'In which year was your first peer-reviewed research article published?'
 colnames(sod21Q2) = c('Q2')
 colnames(pigw21Q2) = c('Q2')
 
-#Necessary harmonisation of response formats, in this case we make sure it is numeric and remove rows with 0 in year of first publication.
-pigw21Q2$Q2=as.numeric(pigw21Q2$Q2)
-pigw21Q2$Q2 = subset(pigw21Q2$Q2, !Q2==0)
+Q2_data <- format_question_numeric(sod21Q2$Q2,
+                                   pigw21Q2$Q2)
 
+plot_numeric(Q2_data,
+             Q2,
+             "Year of first publication by respondent") +
+  coord_cartesian(xlim = c(1990, 2022))
 
-#This would be the function where we pass sod21Q2, pigw21Q2, the column selection (ie named Q2 here) and the Xlab.
-ggplot() +
-     geom_step(aes(x = as.numeric(Q2)), data = sod21Q2, stat = "ecdf") + 
-     geom_step(aes(x = as.numeric(Q2)), data = pigw21Q2, stat = "ecdf", color="#c78b90") +
-  scale_x_continuous(limits = c(1990, 2022)) +
-  xlab("Year of first publication by respondent")
+ks.test(Q2_data$response[Q2_data$survey == "SoD"],
+        Q2_data$response[Q2_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q2
 
-ks.test(sod21Q2$Q2, pigw21Q2$Q2, ifresult = FALSE) #Kolmogorov-Smirnov test for Q2
 ```
 
-```{r question_3, echo=T, eval = F, message=FALSE, warning=FALSE}
+```{r question_3, echo=T, eval = T, message=FALSE, warning=FALSE}
 #So this is a single choice question with an "other".
+sod21Q3 = as.data.frame(dplyr::select(sod21, 1))
+sod21Pile = cbind(sod21Pile, sod21Q2)
+sod21 = dplyr::select(sod21,!1)
 
+
+pigw21Q3 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q2)
+pigw21 = dplyr::select(pigw21,!1)
+
+Q3 = 'Which of the following best describes your primary area of interest?'
+colnames(sod21Q3) = c('Q3')
+colnames(pigw21Q3) = c('Q3')
+
+Q3_levels <- c("Astronomy and planetary science",
+               "Biology",
+               "Business/Investment",
+               "Chemistry",
+               "Earth and Environmental Science",
+               "Engineering",
+               "Materials Science",
+               "Medicine",
+               "Physics",
+               "Social Sciences",
+               "Arts &amp; Humanities",
+               "Other (please specify)")
+
+Q3_data <- format_question_single_choice(sod21Q3$Q3,
+                                         pigw21Q3$Q3,
+                                         Q3_levels)
+
+plot_single_choice(Q3_data,
+                   Q3_levels,
+                   Q3,
+                   "Area of interest")
+
+
+## Others responses
+unique(pigw21[,1])
+
+sod21Q2other = as.data.frame(dplyr::select(sod21, 1))
+sod21Pile = cbind(sod21Pile, sod21Q2other)
+sod21 = dplyr::select(sod21,!1)
+
+pigw21Q2other = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q2other)
+pigw21 = dplyr::select(pigw21,!1)
+
+```
+
+
+Question 4, freetext about funders, only available in Pigweb.
+
+```{r question_4, echo=T, eval = T, message=FALSE, warning=FALSE}
+pigw21Q4 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q4)
+pigw21 = dplyr::select(pigw21,!1)
+
+pigw21Q4
+```
+Question 5 is multiple choice:
+
+
+```{r question_5, echo=T, eval = T, message=FALSE, warning=FALSE}
+Q5_levels <- c("Yes, within my institution",
+               "Yes, within my country",
+               "Yes, internationally",
+               "No",
+               "I don't know")
+n_columns <- length(Q5_levels)
+
+sod21Q5 = as.data.frame(dplyr::select(sod21, (1:n_columns)))
+sod21Pile = cbind(sod21Pile, sod21Q5)
+sod21 = dplyr::select(sod21,!(1:n_columns))
+
+pigw21Q5 = as.data.frame(dplyr::select(pigw21, (1:n_columns)))
+pigw21Pile = cbind(pigw21Pile, pigw21Q5)
+pigw21 = dplyr::select(pigw21,!(1:n_columns))
+
+Q5 = 'Does any of your current research involve collaboration with others?'
+
+Q5_data <- format_question_multiple_choice(sod21Q5,
+                                           pigw21Q5,
+                                           Q5_levels)
+
+plot_multiple_choice(Q5_data,
+                     Q5_levels,
+                     Q5,
+                     "Response")
 ```
