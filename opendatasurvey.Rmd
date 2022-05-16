@@ -129,8 +129,7 @@ Q1 = 'When was the last occasion that you published or submitted a manuscript to
 
 #unique(sod21Q2) #unique() is used to identify the unique answers of the question.
 
-#This would be the data going into the function for ECDFs. The sod21Q1, pigw21Q1 and X-axis labels.For some reason I am having issues with errors here. The code is a bit messed up right now because I botched the fixing. The X scale being taken from Q1 would be a nice touch.
-
+#Setting the answer to Question 1.
 Q1_levels <- c("Within the last year", "1-2 years ago",
                "3-5 years ago", "More than 5 years ago",
                "I have never submitted a manuscript to a journal")

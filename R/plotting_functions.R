@@ -27,6 +27,7 @@ plot_likert <- function(data,
     scale_colour_manual(values = c("#c78b90", "black")) +
     scale_x_discrete(limits = levels,
                      guide = guide_axis(n.dodge = 2)) +
+    ylab("Proportion of respondents") +
     xlab(xlab) +
     ggtitle(question)
   
