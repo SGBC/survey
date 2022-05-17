@@ -63,9 +63,9 @@ source("R/plotting_functions.R")
 
 ```{r pruning_01, echo=T, eval = T, message=FALSE, warning=FALSE}
 
-#pigw21 <- read_excel("pigw21.xlsx")
-sod21 <- read_excel("sod21.xlsx", skip = 1)
-pigw21 <- read_excel("pigw21.xlsx")
+#pigw21 = read_excel("pigw21.xlsx")
+sod21 = read_excel("sod21.xlsx", skip = 1)
+pigw21 = read_excel("pigw21.xlsx")
 
 #The below code chunks were used to ensure that data cannot be traced back to respondents. The data supplied with the github repository has already been treated with the below steps.
 
@@ -130,13 +130,13 @@ Q1 = 'When was the last occasion that you published or submitted a manuscript to
 #unique(sod21Q2) #unique() is used to identify the unique answers of the question.
 
 #Setting the answer to Question 1.
-Q1_levels <- c("Within the last year", "1-2 years ago",
-               "3-5 years ago", "More than 5 years ago",
-               "I have never submitted a manuscript to a journal")
+Q1_levels = c("Within the last year", "1-2 years ago",
+              "3-5 years ago", "More than 5 years ago",
+              "I have never submitted a manuscript to a journal")
 
-Q1_data <- format_question_likert(sod21Q1$Q1,
-                                  pigw21Q1$Q1,
-                                  Q1_levels)
+Q1_data = format_question_likert(sod21Q1$Q1,
+                                 pigw21Q1$Q1,
+                                 Q1_levels)
 
 plot_likert(Q1_data,
             Q1_levels,
@@ -164,8 +164,8 @@ Q2 = 'In which year was your first peer-reviewed research article published?'
 colnames(sod21Q2) = c('Q2')
 colnames(pigw21Q2) = c('Q2')
 
-Q2_data <- format_question_numeric(sod21Q2$Q2,
-                                   pigw21Q2$Q2)
+Q2_data = format_question_numeric(sod21Q2$Q2,
+                                  pigw21Q2$Q2)
 
 plot_numeric(Q2_data,
              Q2,
@@ -193,22 +193,22 @@ Q3 = 'Which of the following best describes your primary area of interest?'
 colnames(sod21Q3) = c('Q3')
 colnames(pigw21Q3) = c('Q3')
 
-Q3_levels <- c("Astronomy and planetary science",
-               "Biology",
-               "Business/Investment",
-               "Chemistry",
-               "Earth and Environmental Science",
-               "Engineering",
-               "Materials Science",
-               "Medicine",
-               "Physics",
-               "Social Sciences",
-               "Arts &amp; Humanities",
-               "Other (please specify)")
+Q3_levels = c("Astronomy and planetary science",
+              "Biology",
+              "Business/Investment",
+              "Chemistry",
+              "Earth and Environmental Science",
+              "Engineering",
+              "Materials Science",
+              "Medicine",
+              "Physics",
+              "Social Sciences",
+              "Arts &amp; Humanities",
+              "Other (please specify)")
 
-Q3_data <- format_question_single_choice(sod21Q3$Q3,
-                                         pigw21Q3$Q3,
-                                         Q3_levels)
+Q3_data = format_question_single_choice(sod21Q3$Q3,
+                                        pigw21Q3$Q3,
+                                        Q3_levels)
 
 plot_single_choice(Q3_data,
                    Q3_levels,
@@ -243,12 +243,12 @@ Question 5 is multiple choice:
 
 
 ```{r question_5, echo=T, eval = T, message=FALSE, warning=FALSE}
-Q5_levels <- c("Yes, within my institution",
-               "Yes, within my country",
-               "Yes, internationally",
-               "No",
-               "I don't know")
-n_columns <- length(Q5_levels)
+Q5_levels = c("Yes, within my institution",
+              "Yes, within my country",
+              "Yes, internationally",
+              "No",
+              "I don't know")
+n_columns = length(Q5_levels)
 
 sod21Q5 = as.data.frame(dplyr::select(sod21, (1:n_columns)))
 sod21Pile = cbind(sod21Pile, sod21Q5)
@@ -260,9 +260,9 @@ pigw21 = dplyr::select(pigw21,!(1:n_columns))
 
 Q5 = 'Does any of your current research involve collaboration with others?'
 
-Q5_data <- format_question_multiple_choice(sod21Q5,
-                                           pigw21Q5,
-                                           Q5_levels)
+Q5_data = format_question_multiple_choice(sod21Q5,
+                                          pigw21Q5,
+                                          Q5_levels)
 
 plot_multiple_choice(Q5_data,
                      Q5_levels,
