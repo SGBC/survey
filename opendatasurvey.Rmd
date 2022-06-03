@@ -257,6 +257,7 @@ plot_multiple_choice(Q5_data,
                      Q5,
                      "Response")
 ```
+
 ```{r question_6, echo=T, eval = T, message=FALSE, warning=FALSE}
 #Data to be analysed in the chunk is copied to the Q6 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
@@ -295,4 +296,44 @@ plot_likert(Q6_data,
 ks.test(Q6_data$response[Q6_data$survey == "SoD"],
         Q6_data$response[Q6_data$survey == "PigWeb"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q6
+```
+
+```{r question_7, echo=T, eval = T, message=FALSE, warning=FALSE}
+#Data to be analysed in the chunk is copied to the Q7 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+sod21Q7 = as.data.frame(dplyr::select(sod21,1))
+sod21Pile = cbind(sod21Pile, sod21Q7)
+sod21 = dplyr::select(sod21,!1)
+colnames(sod21Q7) = c('Q7')
+
+pigw21Q7 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q7)
+pigw21 = dplyr::select(pigw21,!1)
+
+#Setting columnnames and storing the question
+colnames(sod21Q7) = c('Q7')
+colnames(pigw21Q7) = c('Q7')
+Q7 = 'Making research articles open access should be common scholarly practice'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 6.
+Q7_levels = c("Strongly disagree", "Somewhat disagree",
+              "Neutral", "Somewhat agree",
+              "Strongly agree")
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q7$Q7 = reverseCode(pigw21Q7$Q7)
+
+Q7_data = format_question_likert(sod21Q7$Q7,
+                                 pigw21Q7$Q7,
+                                 Q7_levels)
+
+plot_likert(Q7_data,
+            Q7_levels,
+            Q7,
+            "Level of agreement")
+
+ks.test(Q7_data$response[Q7_data$survey == "SoD"],
+        Q7_data$response[Q7_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q7
 ```
