@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # About this report
 This report is designed with two purposes in mind. 
 
-If read directly without opening the code chunks the report provides a comparative analysis of the State of Open Data survey 2021 published by Digital Science (https://doi.org/10.6084/m9.figshare.17081231) and a community specific survey to survey the State of Open Data and attitudes towards FAIR data policies conducted by the Pigweb consortium. The Pigweb study is built on the template provided by the State of Open Data Survey to maximise the comparability between the pig research community participating in Pigweb and the much larger study conducted by Digital Science and Springer Nature.
+If read directly without opening the code chunks the report provides a comparative analysis of the State of Open Data survey 2021 published by Digital Science (https://doi.org/10.6084/m9.figshare.17081231) and a community specific survey to survey the State of Open Data and attitudes towards FAIR data policies conducted by the Pigweb consortium. The Pigweb study is built on the template provided by the State of Open Data Survey to maximise the comparability between the pig research community participating in Pigweb and the much larger study conducted by Digital Science and Springer Nature. It does however also contain som specific questions regarding experiences with infrastructure and services supporting FAIR data.
 
 Opening the code chunks provided in the document or downloading the github repository (https://github.com/SGBC/survey) enables researchers to copy the report and reuse it as a template for their own comparative studies. The document is divided into a number of code chunks with data pruning and functions at the top followed by the report with the code chunks generating data interspersed between them.
 
@@ -63,7 +63,7 @@ source("R/plotting_functions.R")
 
 ```{r pruning_01, echo=T, eval = T, message=FALSE, warning=FALSE}
 
-#pigw21 = read_excel("pigw21.xlsx")
+
 sod21 = read_excel("sod21.xlsx", skip = 1)
 pigw21 = read_excel("pigw21.xlsx")
 
@@ -91,27 +91,15 @@ pigw21Pile = dplyr::select(pigw21,1:4)
 ```
 
 ## Data in the survey
-The questionnaire contain over 200 different answers per respondent and can be broken down into 6 different categories, information about the respondent, questions about the respondents research data, questions about the respondents usage of data and finally views on credit and recognition of data. There is also a final section on information about the respondent which is not publicly shared as it would provide the means to identify the respondents of the survey. There are three types of questions used in the survey and shown in this report.
+The questionnaire contain over 200 different answers per respondent and can be broken down into 6 different categories of questions, questions about the respondent, questions about the respondents research data, questions about the respondents usage of data and finally views on credit and recognition of data. There is also a final section on information about the respondents to the Pigweb survey which is not publicly shared as it would provide the means to identify the respondents of the survey. There are three types of questions used in the survey and shown in this report.
 
 1. Likert scale questions, usually with a five point scale going from "I strongly disagree" to "I strongly agree". These are reported using an empirical cumulative distribution function with one line each for the State of Open Data and the Pigweb survey. Hypothesis testing with calculation of P-values is done with a Kolmogorov-Smirnov test with the alternate hypothesis being that respondents are drawn from two populations with different preferences
 2. Single choice questions, selecting between different options the respondent select the most fitting one. A frequency bar plot with the different alternatives is used to visualize these responses.
 3. Multiple choice questions, respondents may select multiple answers to the question.A frequency bar plot with the different alternatives is used to visualize these responses with the frequency being the number of respondents who selected an answer divided by the number of respondents.
-.
 
-```{r functions_01, echo=F, eval = T, message=FALSE, warning=FALSE}
-#The three types of functions to visualise data go here.
-
-#In the block below these each question is analysed. 
-#Note: Not all respondents answered all questions so frequencies need to have the actual number in the denominator.
-#Several single choice and multipel choice questions got "other" as a response and then the following column is the free text response, listing these responses separately would be good. 
-
-#An example file is in this folder.
-```
-
-The below section is an example of "the old approach" where each chunk would contain all the necessary code, the idea is to split the logic so that data cleaning from surveys is done in the chunk and Dataframes with sorted data are sent along with the question names to the function generating graphs.
 
 ```{r question_1, echo=T, eval = T, message=FALSE, warning=FALSE}
-#Data to be analysed in the chunk is moved to the Q1 dataframe and copied to the pile. The process is repeated for each question in it's respective chunk
+#Data to be analysed in the chunk is copied to the Q1 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
 sod21Q1 = as.data.frame(dplyr::select(sod21,1))
 sod21Pile = cbind(sod21Pile, sod21Q1)
@@ -127,9 +115,9 @@ colnames(sod21Q1) = c('Q1')
 colnames(pigw21Q1) = c('Q1')
 Q1 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
 
-#unique(sod21Q2) #unique() is used to identify the unique answers of the question.
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
 
-#Setting the answer to Question 1.
+#Setting the answer options to Question 1.
 Q1_levels = c("Within the last year", "1-2 years ago",
               "3-5 years ago", "More than 5 years ago",
               "I have never submitted a manuscript to a journal")
@@ -203,8 +191,8 @@ Q3_levels = c("Astronomy and planetary science",
               "Medicine",
               "Physics",
               "Social Sciences",
-              "Arts &amp; Humanities",
-              "Other (please specify)")
+              "Arts&Humanities",
+              "Other")
 
 Q3_data = format_question_single_choice(sod21Q3$Q3,
                                         pigw21Q3$Q3,
@@ -268,4 +256,43 @@ plot_multiple_choice(Q5_data,
                      Q5_levels,
                      Q5,
                      "Response")
+```
+```{r question_6, echo=T, eval = T, message=FALSE, warning=FALSE}
+#Data to be analysed in the chunk is copied to the Q6 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+sod21Q6 = as.data.frame(dplyr::select(sod21,1))
+sod21Pile = cbind(sod21Pile, sod21Q6)
+sod21 = dplyr::select(sod21,!1)
+colnames(sod21Q6) = c('Q6')
+
+pigw21Q6 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q6)
+pigw21 = dplyr::select(pigw21,!1)
+
+#Setting columnnames and storing the question
+colnames(sod21Q6) = c('Q6')
+colnames(pigw21Q6) = c('Q6')
+Q6 = 'Making research articles open access should be common scholarly practice'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 6.
+Q6_levels = c("Strongly disagree", "Somewhat disagree",
+              "Neutral", "Somewhat agree",
+              "Strongly agree")
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q6$Q6 = reverseCode(pigw21Q6$Q6)
+
+Q6_data = format_question_likert(sod21Q6$Q6,
+                                 pigw21Q6$Q6,
+                                 Q6_levels)
+
+plot_likert(Q6_data,
+            Q6_levels,
+            Q6,
+            "Level of agreement")
+
+ks.test(Q6_data$response[Q6_data$survey == "SoD"],
+        Q6_data$response[Q6_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q6
 ```
