@@ -610,3 +610,70 @@ plot_multiple_choice(Q14_data,
                      Q14,
                      "Response")
 ```
+
+Only a single researcher report sharing data to be FAIR and open but in total half the researchers report the data as being at least somewhat open and FAIR-compliant. 
+
+```{r question_15, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", results=FALSE, fig.cap="Figure 14"}
+
+#This question is only in the Pigweb study Data to be analysed in the chunk is copied to the Q15 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+
+
+pigw21Q15 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q15)
+pigw21 = dplyr::select(pigw21,!1)
+
+#Setting columnnames and storing the question
+colnames(pigw21Q15) = c('Q15')
+Q15 = 'To what extent do you think you make your data open in compliance with FAIR?'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 9.
+Q15_levels = c("Very much", "Somewhat", "Neutral", "Not very much", "Not at all", "I don't know")
+#Reordering function for questions where this is necessary.
+#pigw21Q15$Q15 = reverseCode(pigw21Q15$Q15)
+
+Q15_data = format_question_likert(0,
+                                 pigw21Q15$Q15,
+                                 Q15_levels)
+
+plot_likert(Q15_data,
+            Q15_levels,
+            Q15,
+            "Level of agreement")
+
+```
+
+
+```{r question_16, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 15"}
+#This code chunk uses the multiple choice functions.
+Q16_levels = c("Open data software provider",
+              "Colleague/Supervisor",
+              "Web-search",
+              "Institutional Library",
+              "Publisher",
+              "Funder",
+              "Research office/In-house institutional expertise",
+              "Professional 3rd party",
+              "Repository",
+              "I would not require help making my data openly available",
+              "Other (please specify)"
+              )
+n_columns = length(Q16_levels)
+
+pigw21Q16 = as.data.frame(dplyr::select(pigw21, (1:n_columns)))
+pigw21Pile = cbind(pigw21Pile, pigw21Q16)
+pigw21 = dplyr::select(pigw21,!(1:n_columns))
+
+Q16 = 'Does any of your current research involve collaboration with others?'
+
+Q16_data = format_question_multiple_choice(0,
+                                          pigw21Q16,
+                                          Q16_levels)
+
+plot_multiple_choice(Q16_data,
+                     Q16_levels,
+                     Q16,
+                     "Response")
+```
