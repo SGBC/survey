@@ -49,7 +49,9 @@ plot_likert = function(data,
   
 }
 
-#' Reverse codes a Likert scale
+###############################################################################
+## Reverses the order of Likert scale question responses.
+###############################################################################
 #'
 #' @param x is a scalar from or a vector of Likert scores to reverse code
 #' @param min is the minimum value of the Likert scale
@@ -67,6 +69,7 @@ reverseCode <- function(x, min = 1, max = 5){
   
   # Written by Parker Tichko, May 2020
   # Email: my first name DOT my last name @ gmail.com
+  # Source: https://ptichko.github.io/2020/06/04/R-Function-To-Reverse-Code-Likert-Scale.html
   
   if(min(x, na.rm = TRUE) < min | max(x, na.rm = TRUE) > max){
     warning("Warning: input is outside the range of the scale.")
