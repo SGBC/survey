@@ -28,15 +28,24 @@ add_no_answer_level = function(data,
 format_question_likert = function(sod_data,
                                   pigweb_data,
                                   levels) {
-  ## Remove NA observations
-  sod_data = na.exclude(sod_data)
-  pigweb_data = na.exclude(pigweb_data)
+  if (!is.null(pigweb_data)) {
+    ## Remove NA observations
+    pigweb_data = na.exclude(pigweb_data)
+  }
   
-  ## Recode the SoD data to numbers based on levels
-  level_key = c(1:(length(levels)), 0)
-  names(level_key) = c(levels, "0")
-  sod_data_recoded = dplyr::recode(sod_data, !!!level_key)
-  
+  if (is.null(sod_data)) {
+    sod_data_recoded <- NULL
+  } else  {
+    
+    ## Remove NA observations
+    sod_data = na.exclude(sod_data)
+    
+    ## Recode the SoD data to numbers based on levels
+    level_key = c(1:(length(levels)), 0)
+    names(level_key) = c(levels, "0")
+    sod_data_recoded = dplyr::recode(sod_data, !!!level_key)
+  }
+
   tibble::tibble(survey = c(rep("SoD", length(sod_data)),
                             rep("PigWeb", length(pigweb_data))),
                  response = c(sod_data_recoded,
@@ -110,10 +119,14 @@ reverseCode <- function(x, min = 1, max = 5){
 format_question_numeric = function(sod_data,
                                    pigweb_data) {
   
-  pigweb_data = as.numeric(pigweb_data)
-  pigweb_data = pigweb_data[pigweb_data != 0]
+  if (!is.null(pigweb_data)) {
+    pigweb_data = as.numeric(pigweb_data)
+    pigweb_data = pigweb_data[pigweb_data != 0]
+  }
   
-  sod_data = sod_data[sod_data != 0]
+  if (!is.null(sod_data)) {
+    sod_data = sod_data[sod_data != 0]
+  }
   
   tibble::tibble(survey = c(rep("SoD", length(sod_data)),
                             rep("PigWeb", length(pigweb_data))),
