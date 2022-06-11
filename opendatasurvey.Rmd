@@ -192,6 +192,11 @@ Q3 = 'Which of the following best describes your primary area of interest?'
 colnames(sod21Q3) = c('Q3')
 colnames(pigw21Q3) = c('Q3')
 
+## Fix the formatting of "Arts & Humanities"
+sod21Q3$Q3 = sub(sod21Q3$Q3,
+                 pattern = "Arts &amp; Humanities|Arts & Humanities",
+                 replacement = "Arts&Humanities")
+
 Q3_levels = c("Astronomy and planetary science",
               "Biology",
               "Business/Investment",

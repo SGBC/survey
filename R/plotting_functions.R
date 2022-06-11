@@ -1,5 +1,21 @@
 
 ###############################################################################
+## Helper functions
+###############################################################################
+
+## If there are individuals with no answer, add the "no answer" level
+add_no_answer_level = function(data,
+                               levels) {
+  
+  if (any(data$response == 0)) {
+    levels = c("No answer", levels)
+  }
+  
+  levels
+}
+
+
+###############################################################################
 ## Likert questions
 ###############################################################################
 
@@ -12,12 +28,24 @@
 format_question_likert = function(sod_data,
                                   pigweb_data,
                                   levels) {
+  if (!is.null(pigweb_data)) {
+    ## Remove NA observations
+    pigweb_data = na.exclude(pigweb_data)
+  }
   
-  ## Recode the SoD data to numbers based on levels
-  level_key = 1:length(levels)
-  names(level_key) = levels
-  sod_data_recoded = dplyr::recode(sod_data, !!!level_key)
-  
+  if (is.null(sod_data)) {
+    sod_data_recoded <- NULL
+  } else  {
+    
+    ## Remove NA observations
+    sod_data = na.exclude(sod_data)
+    
+    ## Recode the SoD data to numbers based on levels
+    level_key = c(1:(length(levels)), 0)
+    names(level_key) = c(levels, "0")
+    sod_data_recoded = dplyr::recode(sod_data, !!!level_key)
+  }
+
   tibble::tibble(survey = c(rep("SoD", length(sod_data)),
                             rep("PigWeb", length(pigweb_data))),
                  response = c(sod_data_recoded,
@@ -36,6 +64,8 @@ plot_likert = function(data,
                        levels,
                        question,
                        xlab) {
+  
+  levels = add_no_answer_level(data, levels)
   
   ggplot2::ggplot(data) +
     geom_step(aes(x = response, colour = survey), stat = "ecdf") +
@@ -92,10 +122,14 @@ reverseCode <- function(x, min = 1, max = 5){
 format_question_numeric = function(sod_data,
                                    pigweb_data) {
   
-  pigweb_data = as.numeric(pigweb_data)
-  pigweb_data = pigweb_data[pigweb_data != 0]
+  if (!is.null(pigweb_data)) {
+    pigweb_data = as.numeric(pigweb_data)
+    pigweb_data = pigweb_data[pigweb_data != 0]
+  }
   
-  sod_data = sod_data[sod_data != 0]
+  if (!is.null(sod_data)) {
+    sod_data = sod_data[sod_data != 0]
+  }
   
   tibble::tibble(survey = c(rep("SoD", length(sod_data)),
                             rep("PigWeb", length(pigweb_data))),
@@ -145,23 +179,22 @@ format_question_single_choice = function(sod_data,
   ## Count the responses
   counts = na.exclude(dplyr::count(dplyr::group_by(data_recoded, survey, response)))
   
-  ## Augment the counts with zeros for options that weren't used
-  add_missing_responses = function(data) {
+  add_unused_responses = function(data) {
     
     used_responses = na.exclude(unique(data$response))
     
-    missing_responses = setdiff(1:length(levels),
-                                used_responses)
+    unused_responses = setdiff(0:length(levels),
+                               used_responses)
     rbind(data,
-          tibble::tibble(survey = rep(unique(data$survey), length(missing_responses)),
-                         response = missing_responses,
-                         n = rep(0, length(missing_responses))))
+          tibble::tibble(survey = rep(unique(data$survey), length(unused_responses)),
+                         response = unused_responses,
+                         n = rep(0, length(unused_responses))))
   }
   
   counts_split = split(counts, counts$survey)
   
   counts_augmented = purrr::map_dfr(counts_split,
-                                    add_missing_responses)
+                                    add_unused_responses)
   
   ## Calculate percentages
   survey_totals = dplyr::count(dplyr::group_by(data_recoded, survey), name = "survey_total")
@@ -185,6 +218,8 @@ plot_single_choice = function(data,
                               levels,
                               question,
                               xlab) {
+  
+  levels = add_no_answer_level(data, levels)
   
   ggplot2::ggplot(data) +
     geom_bar(aes(x = factor(response), y = percent, fill = survey),
@@ -214,10 +249,18 @@ format_question_multiple_choice = function(sod_data,
                                            pigweb_data,
                                            levels) {
   
+  ## Remove genuinely NA values from SoD, thus removing those who
+  ## never saw the question
+  sod_data = na.exclude(sod_data)
+  
   ## Recode the SoD data to 1s and NAs
   sod_data_recoded = map_dfc(sod_data,
                              function(d) ifelse(d == "0", NA, 1))
   
+  ## Remove rows with no answers from Pigweb, thus removing those
+  ## who have checked no choices
+  to_remove = rowSums(is.na(pigweb_data)) == ncol(pigweb_data)
+  pigweb_data = pigweb_data[!to_remove,]
   
   ## Count the responses
   count_data = function(data, level) {
