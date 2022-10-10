@@ -74,13 +74,14 @@ source("R/plotting_functions.R")
 sod21 <- read.csv2("sod21.csv")
 pigw21 <- read.csv("pigw21.csv", sep=";") #Note: The original pigw21 file has been altered so that the column showing completion of survey is now last.
 
+
 #In the pigweb survey the last question was for respondents to provide their e-mail address and organisation for follow up questions. This is personal information which is not to be shared outside the limited timesframe of the project.
 #pigw21 = pigw21[1:(length(pigw21)-6)]
 
 
 
-#Apart from directly identifiable information it is important to ensure that combinations of information cannot be used to trace the respondents. In this case we have therefore decided to separate the respondent data from the rest of the survey and scramble the rows. Thereby combinations such as year of first publication and major source of finance cannot be used to identify respondents by a process of elimination. Note: This code was not used as a
-#
+#Apart from directly identifiable information it is important to ensure that combinations of information cannot be used to trace the respondents. In this case we have #therefore decided to separate the respondent data from the rest of the survey and scramble the rows. Thereby combinations such as year of first publication and major #source of finance cannot be used to identify respondents by a process of elimination. Note: This code was not used as a
+
 #This snippet take the first 9 columns of the pigw21 dataset, put them in a separate dataframe and shuffles each column before putting it back together.
 #pigrespondents = dplyr::select(pigw21, 1:9)
 #pigw21 = dplyr::select(pigw21, !1:9)
@@ -93,9 +94,9 @@ pigw21 <- read.csv("pigw21.csv", sep=";") #Note: The original pigw21 file has be
 
 #This sets the Data Frames to start at the first question. Each code chunk take the columns corresponding to a question and pass it to the pile when done.
 sod21Pile = dplyr::select(sod21, 1:9)
-sod21 = dplyr::select(sod21, !1:9)
+#sod21 = dplyr::select(sod21, !1:9)
 
-pigw21 = dplyr::select(pigw21,!1:3)
+#pigw21 = dplyr::select(pigw21,!1:3)
 pigw21Pile = dplyr::select(pigw21,1:3)
 ```
 
@@ -112,14 +113,14 @@ The first three questions of the surveys were about the first year of publicatio
 ```{r question_1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 1"}
 #Data to be analysed in the chunk is copied to the Q1 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
-sod21Q1 = as.data.frame(dplyr::select(sod21,1))
+sod21Q1 = as.data.frame(dplyr::select(sod21,10))
 sod21Pile = cbind(sod21Pile, sod21Q1)
-sod21 = dplyr::select(sod21,!1)
+#sod21 = dplyr::select(sod21,!1)
 colnames(sod21Q1) = c('Q1')
 
-pigw21Q1 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Q1 = as.data.frame(dplyr::select(pigw21, 4))
 pigw21Pile = cbind(pigw21Pile, pigw21Q1)
-pigw21 = dplyr::select(pigw21,!1)
+#pigw21 = dplyr::select(pigw21,!1)
 
 #Setting columnnames and storing the question
 colnames(sod21Q1) = c('Q1')
