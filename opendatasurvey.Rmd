@@ -32,6 +32,7 @@ install.packages("lattice")
 install.packages("tidyverse")
 install.packages("likert")
 install.packages("MASS")
+
 install.packages("psych")
 install.packages("viridis")
 install.packages("ggplot2")
@@ -70,10 +71,10 @@ source("R/plotting_functions.R")
 ```{r pruning_01, echo=T, eval = T, message=FALSE, warning=FALSE}
 
 
-sod21 <- read.csv2("~/survey/sod21.csv")
-pigw21 <- read.csv("~/survey/pigw21.csv", sep=";") #Note: The original pigw21 file has been altered so that the column showing completion of survey is now last.
+sod21 <- read.csv2("sod21.csv")
+pigw21 <- read.csv("pigw21.csv", sep=";") #Note: The original pigw21 file has been altered so that the column showing completion of survey is now last.
 
-#In the pigweb survey the last question was for respondents to provide their e-mail address and organisation for follow up questions. This is personal information which is not to be shared outside the limited timesap of the project.
+#In the pigweb survey the last question was for respondents to provide their e-mail address and organisation for follow up questions. This is personal information which is not to be shared outside the limited timesframe of the project.
 #pigw21 = pigw21[1:(length(pigw21)-6)]
 
 
