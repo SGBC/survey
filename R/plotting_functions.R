@@ -39,6 +39,7 @@ format_question_likert = function(sod_data,
     
     ## Remove NA observations
     sod_data = na.exclude(sod_data)
+    pigweb_data = na.exclude(pigweb_data)
     
     ## Recode the SoD data to numbers based on levels
     level_key = c(1:(length(levels)), 0)
@@ -65,7 +66,7 @@ plot_likert = function(data,
                        question,
                        xlab) {
   
-  levels = add_no_answer_level(data, levels)
+#  levels = add_no_answer_level(data, levels)
   
   ggplot2::ggplot(data) +
     geom_step(aes(x = response, colour = survey), stat = "ecdf") +

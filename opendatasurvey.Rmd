@@ -73,6 +73,10 @@ source("R/plotting_functions.R")
 
 sod21 <- read.csv2("sod21.csv")
 pigw21 <- read.csv("pigw21.csv", sep=";") #Note: The original pigw21 file has been altered so that the column showing completion of survey is now last.
+names(sod21) <- gsub(" ", "", names(sod21)) 
+
+sod21collist <- data.frame(colnames(sod21)) #List of all columns with index
+pig21collist <- data.frame(colnames(pigw21)) #List of all columns with index
 
 
 #In the pigweb survey the last question was for respondents to provide their e-mail address and organisation for follow up questions. This is personal information which is not to be shared outside the limited timesframe of the project.
@@ -94,9 +98,7 @@ pigw21 <- read.csv("pigw21.csv", sep=";") #Note: The original pigw21 file has be
 
 #This sets the Data Frames to start at the first question. Each code chunk take the columns corresponding to a question and pass it to the pile when done.
 sod21Pile = dplyr::select(sod21, 1:9)
-#sod21 = dplyr::select(sod21, !1:9)
 
-#pigw21 = dplyr::select(pigw21,!1:3)
 pigw21Pile = dplyr::select(pigw21,1:3)
 ```
 
@@ -151,14 +153,14 @@ ks.test(Q1_data$response[Q1_data$survey == "SoD"],
 
 
 ```{r question_2, echo=T, eval = T, message=FALSE, warning=FALSE, fig.cap="Figure 2"}
-#Selecting question 2 which is now the first column of the sod21 and pigw21 dataframe and passing it to the pile
-sod21Q2 = as.data.frame(dplyr::select(sod21, 1))
-sod21Pile = cbind(sod21Pile, sod21Q2)
-sod21 = dplyr::select(sod21,!1)
+#Selecting question 2
+sod21Q2 = as.data.frame(dplyr::select(sod21, 11))
+sod21Pile = cbind(sod21Pile, sod21Q2) #Add it to the frame for questions already done.
 
-pigw21Q2 = as.data.frame(dplyr::select(pigw21, 1))
-pigw21Pile = cbind(pigw21Pile, pigw21Q2)
-pigw21 = dplyr::select(pigw21,!1)
+
+pigw21Q2 = as.data.frame(dplyr::select(pigw21, 5))
+pigw21Pile = cbind(pigw21Pile, pigw21Q2) #Add it to the frame for questions already done.
+
 
 Q2 = 'In which year was your first peer-reviewed research article published?'
 colnames(sod21Q2) = c('Q2')
