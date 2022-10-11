@@ -117,12 +117,10 @@ The first three questions of the surveys were about the first year of publicatio
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
 sod21Q1 = as.data.frame(dplyr::select(sod21,10))
 sod21Pile = cbind(sod21Pile, sod21Q1)
-#sod21 = dplyr::select(sod21,!1)
 colnames(sod21Q1) = c('Q1')
 
 pigw21Q1 = as.data.frame(dplyr::select(pigw21, 4))
 pigw21Pile = cbind(pigw21Pile, pigw21Q1)
-#pigw21 = dplyr::select(pigw21,!1)
 
 #Setting columnnames and storing the question
 colnames(sod21Q1) = c('Q1')
