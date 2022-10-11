@@ -183,14 +183,11 @@ The proportion of respondents with over 20 years since their first publication i
 
 ```{r question_3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 3"}
 #So this is a single choice question with an "other".
-sod21Q3 = as.data.frame(dplyr::select(sod21, 1))
+sod21Q3 = as.data.frame(dplyr::select(sod21, 12))
 sod21Pile = cbind(sod21Pile, sod21Q3)
-sod21 = dplyr::select(sod21,!1)
 
-
-pigw21Q3 = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Q3 = as.data.frame(dplyr::select(pigw21, 6))
 pigw21Pile = cbind(pigw21Pile, pigw21Q3)
-pigw21 = dplyr::select(pigw21,!1)
 
 Q3 = 'Which of the following best describes your primary area of interest?'
 colnames(sod21Q3) = c('Q3')
@@ -225,74 +222,60 @@ plot_single_choice(Q3_data,
 
 
 ## Others responses
-unique(pigw21[,1])
+unique(pigw21[,6])
 
 sod21Q3other = as.data.frame(dplyr::select(sod21, 1))
 sod21Pile = cbind(sod21Pile, sod21Q3other)
-sod21 = dplyr::select(sod21,!1)
+
 
 pigw21Q3other = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q3other)
-pigw21 = dplyr::select(pigw21,!1)
 
 ```
-
-```{r question_4, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE}
-#information about research funding, now shown in report
-pigw21Q4 = as.data.frame(dplyr::select(pigw21, 1))
-pigw21Pile = cbind(pigw21Pile, pigw21Q4)
-pigw21 = dplyr::select(pigw21,!1)
-
-pigw21Q4
-```
-
 Researchers participating in the PigWeb survey are to a higher degree involved in collaborations than respondents in the State of Open Data survey which is consistent with survey participants being recruited from an EU project on building infrastructure for experimental research for sustainable pig production.
 
-```{r question_5, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 4"}
+```{r question_4, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 4"}
 #This code chunk uses the multiple choice functions.
-Q5_levels = c("Yes, within my institution",
+Q4_levels = c("Yes, within my institution",
               "Yes, within my country",
               "Yes, internationally",
               "No",
               "I don't know")
-n_columns = length(Q5_levels)
+n_columns = length(Q4_levels)
 
-sod21Q5 = as.data.frame(dplyr::select(sod21, (1:n_columns)))
-sod21Pile = cbind(sod21Pile, sod21Q5)
-sod21 = dplyr::select(sod21,!(1:n_columns))
+sod21Q4 = as.data.frame(dplyr::select(sod21, (14:sum(14,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21Q4)
 
-pigw21Q5 = as.data.frame(dplyr::select(pigw21, (1:n_columns)))
-pigw21Pile = cbind(pigw21Pile, pigw21Q5)
-pigw21 = dplyr::select(pigw21,!(1:n_columns))
+pigw21Q4 = as.data.frame(dplyr::select(pigw21, (9:sum(9,n_columns-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21Q4)
 
-Q5 = 'Does any of your current research involve collaboration with others?'
+Q4 = 'Does any of your current research involve collaboration with others?'
 
-Q5_data = format_question_multiple_choice(sod21Q5,
-                                          pigw21Q5,
-                                          Q5_levels)
+Q4_data = format_question_multiple_choice(sod21Q4,
+                                          pigw21Q4,
+                                          Q4_levels)
 
-plot_multiple_choice(Q5_data,
-                     Q5_levels,
-                     Q5,
+plot_multiple_choice(Q4_data,
+                     Q4_levels,
+                     Q4,
                      "Response")
 ```
 
 
 ## Views on open access and open sharing of data or other results results.
 
-```{r question_6-8, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", results=FALSE, fig.cap=c("Figure 5", "Figure 6", "Figure 5-7")}
-#Question 6, 7 and 8 are similar and are therefore displayed together. Kolmogorov smirnov test output from the distributions are hidden in the automated output.
+```{r question_5-7, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", results=FALSE, fig.cap=c("Figure 5", "Figure 6", "Figure 5-7")}
+#Question 5, 6 and 7 are similar and are therefore displayed together. Kolmogorov smirnov test output from the distributions are hidden in the automated output.
 
 #Data to be analysed in the chunk is copied to the Q6 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
 sod21Q6 = as.data.frame(dplyr::select(sod21,1))
 sod21Pile = cbind(sod21Pile, sod21Q6)
-sod21 = dplyr::select(sod21,!1)
 colnames(sod21Q6) = c('Q6')
 
 pigw21Q6 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q6)
-pigw21 = dplyr::select(pigw21,!1)
+
 
 #Setting columnnames and storing the question
 colnames(sod21Q6) = c('Q6')
@@ -321,12 +304,10 @@ plot_likert(Q6_data,
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
 sod21Q7 = as.data.frame(dplyr::select(sod21,1))
 sod21Pile = cbind(sod21Pile, sod21Q7)
-sod21 = dplyr::select(sod21,!1)
 colnames(sod21Q7) = c('Q7')
 
 pigw21Q7 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q7)
-pigw21 = dplyr::select(pigw21,!1)
 
 #Setting columnnames and storing the question
 colnames(sod21Q7) = c('Q7')
@@ -354,12 +335,10 @@ plot_likert(Q7_data,
 #Question 8
 sod21Q8 = as.data.frame(dplyr::select(sod21,1))
 sod21Pile = cbind(sod21Pile, sod21Q8)
-sod21 = dplyr::select(sod21,!1)
 colnames(sod21Q8) = c('Q8')
 
 pigw21Q8 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q8)
-pigw21 = dplyr::select(pigw21,!1)
 
 #Setting columnnames and storing the question
 colnames(sod21Q8) = c('Q8')
@@ -419,12 +398,10 @@ Comparing the responses for each question there are no statistically significant
 #Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
 sod21Q9 = as.data.frame(dplyr::select(sod21,1))
 sod21Pile = cbind(sod21Pile, sod21Q9)
-sod21 = dplyr::select(sod21,!1)
 colnames(sod21Q9) = c('Q9')
 
 pigw21Q9 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q9)
-pigw21 = dplyr::select(pigw21,!1)
 
 #Setting columnnames and storing the question
 colnames(sod21Q9) = c('Q9')
@@ -467,7 +444,6 @@ These questions are unique to the PigWeb survey and included as the European Com
 
 pigw21Q10 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q10)
-pigw21 = dplyr::select(pigw21,!1)
 
 Q10 = 'Does your country have an open data policy relating to FAIR?'
 colnames(pigw21Q10) = c('Q10')
@@ -488,7 +464,7 @@ plot_single_choice(Q10_data,
 
 pigw21Q11 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q11)
-pigw21 = dplyr::select(pigw21,!1)
+
 
 Q11 = 'Does your university/institute have an open data policy relating to FAIR?'
 colnames(pigw21Q11) = c('Q11')
@@ -510,7 +486,7 @@ plot_single_choice(Q11_data,
 
 pigw21Q12 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q11)
-pigw21 = dplyr::select(pigw21,!1)
+
 
 Q12 = 'Do any of your main funders have an open data policy relating to FAIR?'
 colnames(pigw21Q12) = c('Q12')
@@ -535,12 +511,10 @@ Researchers show the highest degree of uncertainty regarding FAIR policies on a 
 #So this is a single choice question with an "other".
 sod21Q13 = as.data.frame(dplyr::select(sod21, 1))
 sod21Pile = cbind(sod21Pile, sod21Q13)
-sod21 = dplyr::select(sod21,!1)
 
 
 pigw21Q13 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q13)
-pigw21 = dplyr::select(pigw21,!1)
 
 Q13 = 'Do you curate/prepare your data for sharing during or shortly after the data collection process either privately or publicly?'
 colnames(sod21Q13) = c('Q13')
@@ -583,11 +557,9 @@ plot_single_choice(Q13_data,
 
 sod21Q13other = as.data.frame(dplyr::select(sod21, 1))
 sod21Pile = cbind(sod21Pile, sod21Q13other)
-sod21 = dplyr::select(sod21,!1)
 
 pigw21Q13other = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q13other)
-pigw21 = dplyr::select(pigw21,!1)
 
 ```
 ```{r question_14, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 13"}
@@ -602,11 +574,9 @@ n_columns = length(Q14_levels)
 
 sod21Q14 = as.data.frame(dplyr::select(sod21, (1:n_columns)))
 sod21Pile = cbind(sod21Pile, sod21Q14)
-sod21 = dplyr::select(sod21,!(1:n_columns))
 
 pigw21Q14 = as.data.frame(dplyr::select(pigw21, (1:n_columns)))
 pigw21Pile = cbind(pigw21Pile, pigw21Q14)
-pigw21 = dplyr::select(pigw21,!(1:n_columns))
 
 Q14 = 'Does any of your current research involve collaboration with others?'
 
@@ -630,7 +600,6 @@ Only a single researcher report sharing data to be FAIR and open but in total ha
 
 pigw21Q15 = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q15)
-pigw21 = dplyr::select(pigw21,!1)
 
 #Setting columnnames and storing the question
 colnames(pigw21Q15) = c('Q15')
@@ -673,7 +642,6 @@ n_columns = length(Q16_levels)
 
 pigw21Q16 = as.data.frame(dplyr::select(pigw21, (1:n_columns)))
 pigw21Pile = cbind(pigw21Pile, pigw21Q16)
-pigw21 = dplyr::select(pigw21,!(1:n_columns))
 
 Q16 = 'Does any of your current research involve collaboration with others?'
 
