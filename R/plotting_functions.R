@@ -253,6 +253,7 @@ format_question_multiple_choice = function(sod_data,
   ## Remove genuinely NA values from SoD, thus removing those who
   ## never saw the question
   sod_data = na.exclude(sod_data)
+  sod_data = sod_data[!apply(sod_data == "", 1, all),]
   
   ## Recode the SoD data to 1s and NAs
   sod_data_recoded = map_dfc(sod_data,
