@@ -40,6 +40,8 @@ format_question_likert = function(sod_data,
     ## Remove NA observations
     sod_data = na.exclude(sod_data)
     pigweb_data = na.exclude(pigweb_data)
+
+    
     
     ## Recode the SoD data to numbers based on levels
     level_key = c(1:(length(levels)), 0)
@@ -239,7 +241,7 @@ plot_single_choice = function(data,
 ## Multiple choice questions
 ###############################################################################
 
-## Create a data frame for plotting for single-choice questions.
+## Create a data frame for plotting for multiple-choice questions.
 ## The resulting data frame contains percentages for each option.
 ## Arguments:
 ## * sod_data and pigweb_data are data frames of answers (i.e. the multiple
@@ -320,3 +322,126 @@ plot_multiple_choice = function(data,
     ggtitle(stringr::str_wrap(question, width = 60))
   
 }
+
+
+###############################################################################
+## Likert questions only included in the PigWeb survey
+###############################################################################
+
+## Create a data frame for plotting that only include PigWeb data
+## Arguments:
+## * Pigweb_data is a vector of answers (i.e. the column of
+##   the respective data frame that contains the answers)
+## * levels is a vector of the levels in order from low to high
+
+format_question_likert_pigweb = function(pigweb_data,
+                                  levels) {
+  if (!is.null(pigweb_data)) {
+    ## Remove NA observations
+    pigweb_data = na.exclude(pigweb_data)
+  }
+  
+  else  {
+    
+    ## Remove NA observations
+    pigweb_data = na.exclude(pigweb_data)
+    
+    
+    
+  }
+  
+  tibble::tibble(survey = rep("PigWeb", length(pigweb_data)),
+                 response = pigweb_data)
+}
+
+
+###############################################################################
+## Single choice questions only included in Pigweb survey
+###############################################################################
+
+## Create a data frame for plotting for single-choice questions.
+## The resulting data frame contains percentages for each option.
+## Arguments:
+## * sod_data and pigweb_data are vectors of answers (i.e. the column of
+##   the respective data frame that contains the answers)
+## * levels is a vector of the options
+
+format_question_single_choice_pigweb = function(pigweb_data,
+                                         levels) {
+  
+  ## Recode the data in the same way as for a Likert question
+  data_recoded = format_question_likert_pigweb(pigweb_data,
+                                        levels)
+  ## Count the responses
+  counts = na.exclude(dplyr::count(dplyr::group_by(data_recoded, survey, response)))
+  
+  add_unused_responses = function(data) {
+    
+    used_responses = na.exclude(unique(data$response))
+    
+    unused_responses = setdiff(0:length(levels),
+                               used_responses)
+    rbind(data,
+          tibble::tibble(survey = rep(unique(data$survey), length(unused_responses)),
+                         response = unused_responses,
+                         n = rep(0, length(unused_responses))))
+  }
+  
+  counts_split = split(counts, counts$survey)
+  
+  counts_augmented = purrr::map_dfr(counts_split,
+                                    add_unused_responses)
+  
+  ## Calculate percentages
+  survey_totals = dplyr::count(dplyr::group_by(data_recoded, survey), name = "survey_total")
+  
+  counts_totals = dplyr::inner_join(counts_augmented, survey_totals, by = "survey")
+  
+  counts_totals$percent = counts_totals$n/counts_totals$survey_total * 100
+  
+  counts_totals
+}
+
+
+###############################################################################
+## Multiple choice questions pigweb survey
+###############################################################################
+
+## Create a data frame for plotting for multiple-choice questions only included.
+## in the Pigweb survey survey.
+## The resulting data frame contains percentages for each option.
+## Arguments:
+## * sod_data and pigweb_data are data frames of answers (i.e. the multiple
+##   columns of the respective data frame that contains the answers)
+## * levels is a vector of the options
+
+format_question_multiple_choice_pigweb = function(survey_data,
+                                           levels) {
+  survey_data = pigw21Q15
+  ## Remove rows with no answers from Pigweb, thus removing those
+  ## who have checked no choices
+  to_remove = rowSums(is.na(survey_data)) == ncol(survey_data)
+  survey_data = survey_data[!to_remove,]
+  
+  ## Count the responses
+  count_data = function(data, level) {
+    tibble::tibble(response = level,
+                   n = sum(data == 1, na.rm = TRUE))
+    
+  }
+  
+  n_pigweb = nrow(survey_data)
+
+  pigweb_counts = purrr::pmap_dfr(list(survey_data,
+                                       levels),
+                                  count_data)
+  
+  ## Calculate percentages
+  pigweb_counts$survey = "PigWeb"
+  pigweb_counts$percent = pigweb_counts$n / n_pigweb * 100
+  
+  counts = pigweb_counts
+  
+  counts
+}
+

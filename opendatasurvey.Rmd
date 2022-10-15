@@ -38,7 +38,7 @@ install.packages("viridis")
 install.packages("ggplot2")
 install.packages("here")
 install.packages("devtools")
-install.packages("rgr")
+#install.packages("rgr") An example of a package harming reproducibility
 install.packages("readxl")
 install.packages("ufs")
 install.packages("writexl")
@@ -61,7 +61,7 @@ library(viridis)
 library(ggplot2)
 library(here)
 library(devtools)
-library(rgr)
+#library(rgr)
 library(readxl)
 library(writexl)
 
@@ -450,7 +450,7 @@ colnames(pigw21Q9) = c('Q9')
 Q9_levels = c("Yes", "No", "I don't know")
 
 #The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
-Q9_data = format_question_single_choice(0, pigw21Q9$Q9,
+Q9_data = format_question_single_choice_pigweb(pigw21Q9$Q9,
                                         Q9_levels)
 
 plot_single_choice(Q9_data,
@@ -471,7 +471,7 @@ colnames(pigw21Q10) = c('Q10')
 Q10_levels = c("Yes", "No", "I don't know")
 
 #The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
-Q10_data = format_question_single_choice(0, pigw21Q10$Q10,
+Q10_data = format_question_single_choice_pigweb(pigw21Q10$Q10,
                                         Q10_levels)
 
 plot_single_choice(Q10_data,
@@ -493,7 +493,7 @@ colnames(pigw21Q11) = c('Q11')
 Q11_levels = c("Yes", "No", "I don't know")
 
 #The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
-Q11_data = format_question_single_choice(0, pigw21Q11$Q11,
+Q11_data = format_question_single_choice_pigweb(pigw21Q11$Q11,
                                         Q11_levels)
 
 plot_single_choice(Q11_data,
@@ -612,8 +612,7 @@ Q14_levels = c("Very much", "Somewhat", "Neutral", "Not very much", "Not at all"
 #Reordering function for questions where this is necessary.
 #pigw21Q14$Q14 = reverseCode(pigw21Q14$Q14)
 
-Q14_data = format_question_likert(0,
-                                 pigw21Q14$Q14,
+Q14_data = format_question_likert_pigweb(pigw21Q14$Q14,
                                  Q14_levels)
 
 plot_likert(Q14_data,
@@ -645,8 +644,7 @@ pigw21Pile = cbind(pigw21Pile, pigw21Q15)
 
 Q15 = 'If you required help in making your research data openly available, which sources would you rely on?'
 
-Q15_data = format_question_multiple_choice(0,
-                                          pigw21Q15,
+Q15_data = format_question_multiple_choice_pigweb(pigw21Q15,
                                           Q15_levels)
 
 plot_multiple_choice(Q15_data,
