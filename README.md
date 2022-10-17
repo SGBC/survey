@@ -5,7 +5,7 @@ extra questions specific for the community. The report can be used both as a des
 as a template with code to add further surveys to the dataset. The repository currently contain the following files:
 
 * opendatasurvey.Rmd The R markdown code or the report
-* PigWebSurvey.pdf, the pigweb Survey conductes using the Netigate survey tool.
+* PigWebSurvey.pdf, the pigweb Survey conducted using the Netigate survey tool.
 * Responsetypes.xlsx, a small number of examples of how the answers are stored in excel.
 * StateOfOpenDataSurvey.docx the State of Open Data Survey questionnaire 2021 kindly provided by the SoD team (https://digitalscience.figshare.com/articles/report/The_State_of_Open_Data_2021/17061347)
 * pigw21.xlsx the responses from the Pigweb survey analysed in the markdown report.
