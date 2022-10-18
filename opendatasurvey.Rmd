@@ -175,7 +175,7 @@ Q2KS = ks.test(Q2_data$response[Q2_data$survey == "SoD"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q2
 
 ```
-The proportion of respondents with over 20 years since their first publication is lower in the PigWeb survey than the State of Open Data survey but overall differences are not sufficient to rject the null hypothesis that the respondents belong to the same population(p = `r Q2KS$p.value`). As expected most PigWeb participants (N = 43) identify as Biologists (N = 28) with the remaining divided between medicine (N = 1) and "Other" where free text responses where related to veterinary sciences (N = 3), animal science (N = 6), life sciences (N = 1) or statistics and mathematics (N = 1).
+The proportion of respondents with over 20 years since their first publication is lower in the PigWeb survey than the State of Open Data survey but overall differences are not sufficient to reject the null hypothesis that the respondents belong to the same population(p = `r Q2KS$p.value`). As expected most PigWeb participants (N = 43) identify as Biologists (N = 28) with the remaining divided between medicine (N = 1) and "Other" where free text responses where related to veterinary sciences (N = 3), animal science (N = 6), life sciences (N = 1) or statistics and mathematics (N = 1).
 
 ```{r question_3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 3"}
 #This is a single choice question with an "other".
