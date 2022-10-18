@@ -649,3 +649,92 @@ plot_multiple_choice(Q15_data,
                      Q15,
                      "Response")
 ```
+
+
+```{r question_16, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 16"}
+#Creating data sets for Q16
+sod21Q16 = as.data.frame(dplyr::select(sod21,60))
+sod21Pile = cbind(sod21Pile, sod21Q16)
+colnames(sod21Q16) = c('Q16')
+
+pigw21Q16 = as.data.frame(dplyr::select(pigw21, 42))
+pigw21Pile = cbind(pigw21Pile, pigw21Q16)
+
+
+#Setting columnnames and storing the question for Q16
+colnames(sod21Q16) = c('Q16')
+colnames(pigw21Q16) = c('Q16')
+Q16 = 'Replicating studies (use of your data as a reference to determine whether they can be repeated under similar conditions)'
+
+#Setting the answer options to Q16.
+Q16_levels = c("Extremely comfortable", "Somewhat confortable",
+              "Neutral", "Somewhat uncomfortable",
+              "Extremely uncomfortable", "I don't know")
+
+#The Pigweb scale is correctly formatted for this question (Q16), thus no need to reverse the question.
+#pigw21Q16$Q16 = reverseCode(pigw21Q16$Q16) 
+
+Q16_data = format_question_likert(sod21Q16$Q16,
+                                 pigw21Q16$Q16,
+                                 Q16_levels)
+
+plot_likert(Q16_data,
+            Q16_levels,
+            Q16,
+            "Level of agreement")
+
+
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hyptohesis that the two populations are the same. 
+
+SvPQ16 = ks.test(Q16_data$response[Q16_data$survey == "SoD"],
+        Q16_data$response[Q16_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q16
+```
+
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q16$Q16 = reverseCode(pigw21Q16$Q16)
+
+
+```{r question_17, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 17"}
+#Creating data sets for Q17
+sod21Q17 = as.data.frame(dplyr::select(sod21,61))
+sod21Pile = cbind(sod21Pile, sod21Q17)
+colnames(sod21Q17) = c('Q17')
+
+pigw21Q17 = as.data.frame(dplyr::select(pigw21, 43))
+pigw21Pile = cbind(pigw21Pile, pigw21Q17)
+
+
+#Setting columnnames and storing the question for Q17
+colnames(sod21Q17) = c('Q17')
+colnames(pigw21Q17) = c('Q17')
+Q17 = 'Reanalysis (using a different method to analyse your data set)'
+
+#Setting the answer options to Q17.
+Q17_levels = c("Extremely comfortable", "Somewhat confortable",
+              "Neutral", "Somewhat uncomfortable",
+              "Extremely uncomfortable", "I don't know")
+
+#The Pigweb scale is correctly formatted for this question (Q17), thus no need to reverse the question.
+#pigw21Q17$Q17 = reverseCode(pigw21Q17$Q17) 
+
+Q17_data = format_question_likert(sod21Q17$Q17,
+                                 pigw21Q17$Q17,
+                                 Q17_levels)
+
+plot_likert(Q17_data,
+            Q17_levels,
+            Q17,
+            "Level of agreement")
+
+
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hyptohesis that the two populations are the same. 
+
+SvPQ17 = ks.test(Q17_data$response[Q17_data$survey == "SoD"],
+        Q17_data$response[Q17_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q17
+```
