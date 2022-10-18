@@ -133,8 +133,6 @@ Q1_levels = c("Within the last year", "1-2 years ago",
 Q1_data = format_question_likert(sod21Q1$Q1,
                                  pigw21Q1$Q1,
                                  Q1_levels)
-```
-```{r}
 plot_likert(Q1_data,
             Q1_levels,
             Q1,
@@ -516,7 +514,7 @@ Q12 = 'Do you curate/prepare your data for sharing during or shortly after the d
 colnames(sod21Q12) = c('Q12')
 colnames(pigw21Q12) = c('Q12')
 
-#The State of Open Data survey contain som unfortunate formating as it seems to be made up of multiple different surveys stitched together and some questions have been rephrased. 
+#The State of Open Data survey contain some unfortunate formatting as it seems to be made up of multiple different surveys stitched together and some questions have been rephrased. 
 #A reconciliation step is therefore necessary.
 unique(sod21Q12)
 
@@ -703,7 +701,7 @@ sod21Q17 = as.data.frame(dplyr::select(sod21,61))
 sod21Pile = cbind(sod21Pile, sod21Q17)
 colnames(sod21Q17) = c('Q17')
 
-pigw21Q17 = as.data.frame(dplyr::select(pigw21, 43))
+pigw21Q17 = as.data.frame(dplyr::select(pigw21, 421))
 pigw21Pile = cbind(pigw21Pile, pigw21Q17)
 
 
@@ -737,4 +735,83 @@ plot_likert(Q17_data,
 SvPQ17 = ks.test(Q17_data$response[Q17_data$survey == "SoD"],
         Q17_data$response[Q17_data$survey == "PigWeb"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q17
+```
+
+
+```{r question_21, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 21"}
+#This code chunk uses the multiple choice functions.
+Q21_levels = c("Contains sensitive information or require study participant permissions before sharing",
+              "Lack of time to deposit data",
+              "Costs of sharing data",
+              "Unsure about copyright and data licensing",
+              "Data are too large to share",
+              "I do not know what repository to use",
+              "I am unsure I have permission from my funder or institute to share my data",
+              "Data are too small or unimportant",
+              "Organising data in a presentable and usable way",
+              "Concerns about misuse of data",
+              "Not receiving appropriate credit or acknowledgement",
+              "Another lab may make a different interpretation of my data",
+              "Another lab may 'scoop' me to a discovery",
+              "I'm not sure I've exhausted all potential findings yet",
+              "Others may find errors in my data",
+              "Others may not be able to repeat my findings",
+              "I have no desire to share my findings",
+              "I have no problems/concerns about sharing data",
+              "Other")
+
+n_columns = length(Q21_levels)
+
+sod21Q21 = as.data.frame(dplyr::select(sod21, (65:sum(65,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21Q21)
+
+pigw21Q21 = as.data.frame(dplyr::select(pigw21, (47:sum(47,n_columns,-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21Q21)
+
+Q21 = 'What problems/concerns, if any, do you have with sharing datasets?'
+
+Q21_data = format_question_multiple_choice(sod21Q21,
+                                          pigw21Q21,
+                                          Q21_levels)
+
+plot_multiple_choice(Q21_data,
+                     Q21_levels,
+                     Q21,
+                     "Response")
+
+## Others responses for Q21
+unique(pigw21[,65])
+unique(sod21[,84])
+
+sod21Q21other = as.data.frame(dplyr::select(sod21, 1))
+sod21Pile = cbind(sod21Pile, sod21Q21other)
+
+
+pigw21Q21other = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q21other)
+```
+
+
+```{r question_45, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 45"}
+pigw21Q45 = as.data.frame(dplyr::select(pigw21, 114))
+pigw21Pile = cbind(pigw21Pile, pigw21Q45)
+
+sod21Q45 = as.data.frame(dplyr::select(sod21, 86))
+sod21Pile = cbind(sod21Pile, sod21Q45)
+
+
+Q45 = "Have you ever been 'scooped' (i.e. have another lab published an result similar to your own before you do) as a result of data you have previously shared?"
+colnames(pigw21Q45) = c('Q45')
+colnames(sod21Q45) = c('Q45')
+
+Q45_levels = c("Yes", "No", "I don't know")
+
+Q45_data = format_question_single_choice(sod21Q45$Q45,
+                                         pigw21Q45$Q45,
+                                         Q45_levels)
+
+plot_single_choice(Q45_data,
+                   Q45_levels,
+                   Q45,
+                   "Area of interest")
 ```
