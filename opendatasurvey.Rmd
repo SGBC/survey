@@ -133,8 +133,7 @@ Q1_levels = c("Within the last year", "1-2 years ago",
 Q1_data = format_question_likert(sod21Q1$Q1,
                                  pigw21Q1$Q1,
                                  Q1_levels)
-```
-```{r}
+
 plot_likert(Q1_data,
             Q1_levels,
             Q1,
