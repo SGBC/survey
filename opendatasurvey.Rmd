@@ -35,7 +35,6 @@ install.packages("MASS")
 
 install.packages("psych")
 install.packages("viridis")
-install.packages("ggplot2")
 install.packages("here")
 install.packages("devtools")
 #install.packages("rgr") An example of a package harming reproducibility
