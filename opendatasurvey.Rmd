@@ -554,7 +554,7 @@ plot_single_choice(Q12_data,
 #unique(pigw21[,1])
 #unique(sod21[,1])
 
-sod21Q12other = as.data.frame(dplyr::select(sod21, 1))
+sod21Q12other = as.data.frame(dplyr::select(sod21, 23))
 sod21Pile = cbind(sod21Pile, sod21Q12other)
 
 pigw21Q12other = as.data.frame(dplyr::select(pigw21, 22))
@@ -594,6 +594,8 @@ Only a single researcher report sharing data to be FAIR and open but in total ha
 
 ```{r question_14, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", results=FALSE, fig.cap="Figure 14"}
 
+#Row 39 in sod21
+
 #This question is only in the Pigweb study Data to be analysed in the chunk is copied to the Q14 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
 #Note rerunning the below lines will move the currently first column in pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
 
@@ -624,6 +626,8 @@ plot_likert(Q14_data,
 
 
 ```{r question_15, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 15"}
+
+#The order got wrong and SoD 41 is equivalent to PigW30
 #This code chunk uses the multiple choice functions.
 Q15_levels = c("Open data software provider",
               "Colleague/Supervisor",
