@@ -744,4 +744,6 @@ plot_likert(Q17_data,
 SvPQ17 = ks.test(Q17_data$response[Q17_data$survey == "SoD"],
         Q17_data$response[Q17_data$survey == "PigWeb"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q17
+
+#Add code
 ```
