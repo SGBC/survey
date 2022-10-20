@@ -650,6 +650,87 @@ plot_multiple_choice(Q15_data,
                      "Response")
 ```
 
+```{r question_QP1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP1"}
+#Paulina question 1
+#To what extent are you comfortable with others using your data for the following
+#P1 for paulina question1
+pigw21QP1 = as.data.frame(dplyr::select(pigw21, 44))
+pigw21Pile = cbind(pigw21Pile, pigw21QP1)
+
+#Setting column names and storing the question
+colnames(pigw21QP1) = c('QP1')
+QP1 = 'To what extent are you comfortable with others using your data for the following: Reinterpretation using your data as is to answer another question.'
+
+#Setting the answer options to Question QP1.
+QP1_levels = c("Extremely comfortable", "Somewhat", "Neutral", "Somewhat uncomfortable", "extremely uncomfortable", "I don't know")
+
+sod21P1 = as.data.frame(dplyr::select(sod21,62))
+sod21Pile = cbind(sod21Pile, sod21P1)
+colnames(sod21P1) = c('QP1')
+
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21QP1$QP1 = reverseCode(pigw21QP1$QP1)
+?reverse.code
+
+QP1_data = format_question_likert(sod21P1$QP1,
+                                 pigw21QP1$QP1,
+                                 QP1_levels)
+
+#Likert plot
+plot_likert(QP1_data,
+            QP1_levels,
+            QP1,
+            "Level of comfort")
+
+#This section test for if there is statistically significant difference in the respondent groups
+#with the null hypothesis that the two populations are the same. 
+
+ks.test(QP1_data$response[QP1_data$survey == "SoD"],
+        QP1_data$response[QP1_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for QP1
+
+#check number of NA's
+sum(is.na(QP1_data$response))
+```
+
+```{r question_QP2, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP2"}
+#Paulina question 2
+#To what extent are you comfortable with others using your data for the following
+pigw21QP2 = as.data.frame(dplyr::select(pigw21, 45))
+pigw21Pile = cbind(pigw21Pile, pigw21QP2)
+
+#Setting column names and storing the question
+colnames(pigw21QP2) = c('QP2')
+QP2 = 'To what extent are you comfortable with others using your data for the following: Isolated reuse (reanalysing your data to answer a new question).'
+
+#Setting the answer options to Question QP2.
+QP2_levels = c("Extremely comfortable", "Somewhat", "Neutral", "Somewhat uncomfortable", "extremely uncomfortable", "I don't know")
+
+sod21QP2 = as.data.frame(dplyr::select(sod21,63))
+sod21Pile = cbind(sod21Pile, sod21QP2)
+colnames(sod21QP2) = c('QP2')
+
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21QP2$QP2 = reverseCode(pigw21QP2$QP2)
+
+
+QP2_data = format_question_likert(sod21QP2$QP2,
+                                 pigw21QP2$QP2,
+                                 QP2_levels)
+
+#Likert plot
+plot_likert(QP2_data,
+            QP2_levels,
+            QP2,
+            "Level of comfort")
+
+#This section test for if there is statistically significant difference in the respondent groups
+#with the null hypothesis that the two populations are the same. 
+
+ks.test(QP2_data$response[QP2_data$survey == "SoD"],
+        QP2_data$response[QP2_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for QP2
+```
 
 ```{r question_16, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 16"}
 #Creating data sets for Q16 (In otherwords: Isolating the responses of Q16 in the two surveys and adding this to a compiled data set, one for each survey)
