@@ -1,0 +1,12 @@
+Package: survey.plotting
+Title: Plotting functions for survey data 
+Version: 0.0.0.9000
+Authors@R: 
+    person("Regine Victoria", "Holt", , "regine.victoria.holt@nmbu.no", role = c("cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Comparing and plotting reponse data from two surveys: Pigweb 2021 and SOD 2021
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
