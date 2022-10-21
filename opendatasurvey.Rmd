@@ -998,7 +998,42 @@ plot_likert(QP2_data,
 ks.test(QP2_data$response[QP2_data$survey == "SoD"],
         QP2_data$response[QP2_data$survey == "PigWeb"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for QP2
+
 ```
+
+```{r question_QP3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP3"}
+#Paulina Q3
+#What areas (if any) do you feel you need help with in regard to making your research data openly available.
+#This code chunk uses the multiple choice functions.
+QP3_levels = c("Finding the time to manage my data",
+              "Data management plans",
+              "Copyright/Licensing of data",
+              "Data management policies",
+              "Curation of data",
+              "Finding appropiate repositories for deposition of data",
+              "None of the abobe",
+              "Other")
+n_columns = length(QP3_levels)
+
+sod21QP3 = as.data.frame(dplyr::select(sod21, (87:sum(87,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21QP3)
+
+pigw21QP3 = as.data.frame(dplyr::select(pigw21, (67:sum(67,n_columns-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21QP3)
+
+QP3 = 'What areas (if any) do you feel you need help with in regard to making your research data openly available'
+
+
+QP3_data = format_question_multiple_choice(sod21QP3,
+                                          pigw21QP3,
+                                          QP3_levels)
+
+plot_multiple_choice(QP3_data,
+                     QP3_levels,
+                     QP3,
+                     "Response")
+```
+
 
 ```{r question_16, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 16"}
 #Creating data sets for Q16 (In otherwords: Isolating the responses of Q16 in the two surveys and adding this to a compiled data set, one for each survey)
