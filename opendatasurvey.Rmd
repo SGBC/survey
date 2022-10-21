@@ -679,7 +679,7 @@ colnames(pigw21Q20) = c('Q20')
 
 # Storing the question (used for plotting)
 # - The plot title 
-Q20 = 'Combination reuse (reanalyzing your data in combination with other data sets to answer a new question)'
+Q20 = 'To what extent are you comfortable with others using your data for combination reuse?'
 
 # Setting the answer options to Question 20
 # - i.e. the ticks on the x axis when plotting
@@ -740,7 +740,7 @@ Q27_levels = c("Institutional repository",
 n_columns <- length(Q27_levels)
 
 # Create data frames of answers from both surveys 
-# - i.e. extracting the the multiple columns of the respective data frame that contains the answers
+# - i.e. extracting the multiple columns of the respective data frame that contains the answers
 # Columns are selected by specifying the first column with a corresponding answer for the question, and telling R to extract the number of columns corresponding to the number of levels ('n_columns') with the exception of the 'other' column (indicated by -1 in the code below)
 pigw21Q27 <- as.data.frame(dplyr::select(pigw21, (98:sum(98,n_columns,-1))))
 sod21Q27 = as.data.frame(dplyr::select(sod21, (32:sum(32,n_columns,-1))))
@@ -752,7 +752,6 @@ sod21Pile <- cbind(sod21Pile, sod21Q27)
 # Storing the question (used for plotting)
 # - The plot title 
 Q27 <- 'How do you share your research data with a public audience?'
-
 
 # Create a data frame containing percentages for each option for plotting multiple-choice questions
 # - sod_data and pigweb_data are data frames of answers 
@@ -773,15 +772,21 @@ plot_multiple_choice(Q27_data,
                      Q27,
                      "Response")
 
-# Others responses
+
+##  Others responses ##
+ 
+# Identifying the unique answers of the question from both surveys 
+# - i.e. answers to the 'other' option
 unique(pigw21[,104])
 unique(sod21[,38])
 
-
+# Create data frames of answers to the 'other' option from both surveys 
+# - i.e. extracting the column of the respective data frame that contains the 'other' option
 pigw21Q27other = as.data.frame(pigw21[,104])
-pigw21Pile = cbind(pigw21Pile, pigw21Q27other)
-
 sod21Q27other = as.data.frame(sod21[,38])
+
+# Add the questions to the 'pile' with all the other questions
+pigw21Pile = cbind(pigw21Pile, pigw21Q27other)
 sod21Pile = cbind(sod21Pile, sod21Q27other)
 
 ```
@@ -849,15 +854,21 @@ plot_multiple_choice(Q29_data,
                      Q29,
                      "Response")
 
-## Others responses
+
+##  Others responses ##
+ 
+# Identifying the unique answers of the question from both surveys 
+# - i.e. answers to the 'other' option
 unique(pigw21[,111])
 unique(sod21[,59])
 
-
+# Create data frames of answers to the 'other' option from both surveys 
+# - i.e. extracting the column of the respective data frame that contains the 'other' option
 pigw21Q29other = as.data.frame(pigw21[,111])
-pigw21Pile = cbind(pigw21Pile, pigw21Q29other)
-
 sod21Q29other = as.data.frame(sod21[,59])
+
+# Add the questions to the 'pile' with all the other questions
+pigw21Pile = cbind(pigw21Pile, pigw21Q29other)
 sod21Pile = cbind(sod21Pile, sod21Q29other)
 
 ```
@@ -911,7 +922,7 @@ Q30_data <- format_question_single_choice(sod21Q30$Q30,
 plot_single_choice(Q30_data,
                    Q30_levels,
                    Q30,
-                   "Collaboration occuring as a result of shared data")
+                   "Response")
 
 ```
 
