@@ -650,6 +650,274 @@ plot_multiple_choice(Q15_data,
                      "Response")
 ```
 
+
+# Question 20
+
+To what extent are you comfortable with others using your data for the following:
+* Combination reuse (Reanalyzing your data in combination with other data sets to answer a new question
+
+The question is answered on a 5 point likert scale (6 points including 'I don't know')
+
+
+```{r question_20, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", results=FALSE, fig.cap=c("Figure 20")}
+
+# This is a single choice question measure on a likert scale
+# - This code chunk uses likert functions
+
+# Create data frames of answers from both surveys 
+# - i.e. extracting the column of the respective data frame that contains the answers
+sod21Q20 <- as.data.frame(sod21[,64])
+pigw21Q20 <- as.data.frame(pigw21[,46])
+
+# Add the questions to the 'pile' with all the other questions 
+pigw21Pile <- cbind(pigw21Pile, pigw21Q20)
+sod21Pile <- cbind(sod21Pile, sod21Q20)
+
+#Setting column names
+colnames(sod21Q20) = c('Q20')
+colnames(pigw21Q20) = c('Q20')
+
+# Storing the question (used for plotting)
+# - The plot title 
+Q20 = 'Combination reuse (reanalyzing your data in combination with other data sets to answer a new question)'
+
+# Setting the answer options to Question 20
+# - i.e. the ticks on the x axis when plotting
+Q20_levels = c("Extremely comfortable", "Somewhat comfortable",
+              "Neutral", "Somewhat uncomfortable",
+              "Extremely uncomfortable", "I don't know")
+
+# The code below is used when it is necessary to reverse the question scale. This is not necessary here! 
+# pigw21Q20$Q20 = reverseCode(pigw21Q20$Q20)
+
+# Create a data frame for plotting that combines SoD and PigWeb data for likert scale question
+# - sod_data and pigweb_data are vectors of answers 
+# - levels is a vector of the levels in order from low to high
+# NB! sod_data must be before pigweb_data
+Q20_data <- format_question_likert(sod21Q20$Q20,
+                                 pigw21Q20$Q20,
+                                 Q20_levels)
+
+
+# Plot a cumulative step graph of the answers for a Likert-scale question
+# Arguments (in order):
+# - A data frame produced by format_question_likert
+# - A vector of levels in order from low to high
+# - A character string of the question which will be the title
+# - A character string for the x-axis label (not a separate vector, write text below)
+plot_likert(Q20_data,
+            Q20_levels,
+            Q20,
+            "Level of comfort")
+
+```
+# Question 27
+
+How do you share your research data with a public audience. Please select all that apply
+* Institutional repository
+* Funder repository
+* External repository
+* Blog/Website
+* Cloud file sharing
+* Other (please specify)
+
+```{r question_27, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 27", out.width="50%"}
+
+# This is a multiple choice question with an 'other' option
+# - This code chunk uses multiple choice functions
+
+# Setting the answer options to Question 27
+# - i.e. the ticks on the x axis when plotting
+Q27_levels = c("Institutional repository",
+              "Funder repository",
+              "External repository",
+              "Blog/Website",
+              "Cloud file sharing",
+              "Other")
+
+# Create vector of the number of levels 
+# - Needed to extract columns corresponding to the questions in next step
+n_columns <- length(Q27_levels)
+
+# Create data frames of answers from both surveys 
+# - i.e. extracting the the multiple columns of the respective data frame that contains the answers
+# Columns are selected by specifying the first column with a corresponding answer for the question, and telling R to extract the number of columns corresponding to the number of levels ('n_columns') with the exception of the 'other' column (indicated by -1 in the code below)
+pigw21Q27 <- as.data.frame(dplyr::select(pigw21, (98:sum(98,n_columns,-1))))
+sod21Q27 = as.data.frame(dplyr::select(sod21, (32:sum(32,n_columns,-1))))
+
+# Add the questions to the 'pile' with all the other questions
+pigw21Pile <- cbind(pigw21Pile, pigw21Q27)
+sod21Pile <- cbind(sod21Pile, sod21Q27)
+
+# Storing the question (used for plotting)
+# - The plot title 
+Q27 <- 'How do you share your research data with a public audience?'
+
+
+# Create a data frame containing percentages for each option for plotting multiple-choice questions
+# - sod_data and pigweb_data are data frames of answers 
+# - levels is a vector of the options
+# NB! sod_data must be before pigweb_data
+Q27_data <- format_question_multiple_choice(sod21Q27,
+                                          pigw21Q27,
+                                          Q27_levels)
+
+# Plot bar chart of percentages for a multiple response question (excluding 'other' option)
+# Arguments (in order):
+# - A data frame produced by format_question_multiple_choice
+# - A vector of the answer options
+# - A character string of the question which will be the title
+# - A character string for the x-axis label (not a separate vector, write text below)
+plot_multiple_choice(Q27_data,
+                     Q27_levels,
+                     Q27,
+                     "Response")
+
+# Others responses
+unique(pigw21[,104])
+unique(sod21[,38])
+
+
+pigw21Q27other = as.data.frame(pigw21[,104])
+pigw21Pile = cbind(pigw21Pile, pigw21Q27other)
+
+sod21Q27other = as.data.frame(sod21[,38])
+sod21Pile = cbind(sod21Pile, sod21Q27other)
+
+```
+
+
+# Question 29
+
+How, if at all, do you monitor the use of data that you share publicly?
+* Citations
+* Resolutions
+* Download
+* Altmetrics
+* I do not monitor the use of my data
+* Other(please specify)
+
+```{r question_29, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 29", out.width="50%"}
+
+# This is a multiple choice question with an 'other' option
+# - This code chunk uses the multiple choice functions.
+
+#Setting the answer options to Question 29
+# - i.e. the ticks on the x axis when plotting
+Q29_levels = c("Citations",
+              "Resolutions",
+              "Downloads",
+              "Altmetrics",
+              "I do not monitor the use of my data",
+              "Other")
+
+# Create vector of the number of levels 
+# - Needed to extract columns corresponding to the questions in next step
+n_columns <- length(Q29_levels)
+
+# Create data frames of answers from both surveys 
+# - i.e. extracting the the multiple columns of the respective data frame that contains the answers
+
+# Columns are selected by specifying the first column with a corresponding answer for the question, and telling R to extract the number of columns corresponding to the number of levels ('n_columns') with the exception of the 'other' column (indicated by -1 in the code below)
+pigw21Q29 <- as.data.frame(dplyr::select(pigw21, (106:sum(106,n_columns,-1))))
+sod21Q29 = as.data.frame(dplyr::select(sod21, (53:sum(53,n_columns,-1))))
+
+# Add the questions to the 'pile' with all the other questions
+sod21Pile <- cbind(sod21Pile, sod21Q29)
+pigw21Pile <- cbind(pigw21Pile, pigw21Q29)
+
+# Storing the question (used for plotting)
+# - The plot title 
+Q29 <- 'How, if at all, do you monitor the use of data that you share publicly?'
+
+# Create a data frame containing percentages for each option for plotting multiple-choice questions
+# - sod_data and pigweb_data are data frames of answers 
+# - levels is a vector of the options
+# NB! sod_data must be before pigweb_data
+Q29_data <- format_question_multiple_choice(sod21Q29,
+                                          pigw21Q29,
+                                          Q29_levels)
+
+# Plot bar chart of percentages for a multiple response question (excluding 'other' option)
+# Arguments (in order):
+# - A data frame produced by format_question_multiple_choice
+# - A vector of the answer options
+# - A character string of the question which will be the title
+# - A character string for the x-axis label (not a separate vector, write text below)
+plot_multiple_choice(Q29_data,
+                     Q29_levels,
+                     Q29,
+                     "Response")
+
+## Others responses
+unique(pigw21[,111])
+unique(sod21[,59])
+
+
+pigw21Q29other = as.data.frame(pigw21[,111])
+pigw21Pile = cbind(pigw21Pile, pigw21Q29other)
+
+sod21Q29other = as.data.frame(sod21[,59])
+sod21Pile = cbind(sod21Pile, sod21Q29other)
+
+```
+
+# Question 30 
+Have you ever been involved in a collaboration as a result of data you have previously shared?
+* Yes
+* No
+* I don't know
+
+```{r question_30, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 30", out.width="50%"}
+
+# This is a single choice question without an "other" option
+# - This code chunk uses single choice functions
+
+# Create data frames of answers from both surveys 
+# - i.e. extracting the column of the respective data frame that contains the answers
+pigw21Q30 <- as.data.frame(pigw21[,113])
+sod21Q30 <- as.data.frame(sod21[,85])
+
+# Add the questions to the 'pile' with all the other questions
+pigw21Pile <- cbind(pigw21Pile, pigw21Q30)
+sod21Pile <- cbind(sod21Pile, sod21Q30)  
+
+#Setting column names
+colnames(sod21Q30) <- c('Q30')
+colnames(pigw21Q30) <- c('Q30')
+
+#Setting the answer options to Question 30
+# - i.e. the ticks on the x axis when plotting
+Q30 <- 'Have you ever been involved in a collaboration as a result of data you have previously shared?'
+
+# Set the names of the answers
+# - These are the names of the ticks on the x axis when plotting
+Q30_levels <- c("Yes", "No", "I don't know")
+
+# Create a data frame containing percentages for each option for plotting for single-choice questions
+# - sod_data and pigweb_data are vectors of answers 
+# - levels is a vector of the options
+# NB! sod_data must be before pigweb_data
+Q30_data <- format_question_single_choice(sod21Q30$Q30,
+                                          pigw21Q30$Q30,
+                                          Q30_levels)
+
+# Plot a bar chart of percentages for a single response question
+# Arguments (in order):
+# - A data frame produced by format_question_single_choice
+# - A vector of the answer options
+# - A character string of the question which will be the title
+# - A character string for the x-axis label (not a separate vector, write text below)
+plot_single_choice(Q30_data,
+                   Q30_levels,
+                   Q30,
+                   "Collaboration occuring as a result of shared data")
+
+```
+
+
+
+
 ```{r question_QP1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP1"}
 #Paulina question 1
 #To what extent are you comfortable with others using your data for the following
@@ -900,3 +1168,4 @@ plot_single_choice(Q45_data, #Plotting the responses
                    Q45,
                    "Response")
 ```
+
