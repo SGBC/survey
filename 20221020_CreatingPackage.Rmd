@@ -1,0 +1,659 @@
+---
+title: "20221020_CreatingPackage"
+author: "Regine Victoria Holt"
+date: "2022-10-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Importing survey data
+
+```{r prep_01, echo=F, eval = F, message=FALSE, warning=FALSE}
+# install packages
+install.packages("knitr")
+install.packages("lattice")
+install.packages("tidyverse")
+install.packages("likert")
+install.packages("MASS")
+install.packages("psych")
+install.packages("viridis")
+install.packages("here")
+install.packages("devtools")
+install.packages("readxl")
+install.packages("ufs")
+install.packages("writexl")
+install.packages("roxygen2")
+```
+
+
+```{r prep_02, echo=F, eval = T, message=FALSE, warning=FALSE}
+# set options
+options(stringsAsFactors = F)         # no automatic data transformation
+options("scipen" = 100, "digits" = 4) # suppress math annotation
+
+# load packages
+library(knitr)
+library(lattice)
+library(tidyverse)
+library(likert)
+library(MASS)
+library(psych)
+library(viridis)
+library(ggplot2)
+library(here)
+library(devtools)
+library(readxl)
+library(writexl)
+library(roxygen2)
+```
+
+```{r pruning_01, echo=T, eval = T, message=FALSE, warning=FALSE}
+sod21 <- read.csv2("sod21.csv")
+pigw21 <- read.csv("pigw21.csv", sep=";") #Note: The original pigw21 file has been altered so that the column showing completion of survey is now last.
+names(sod21) <- gsub(" ", "", names(sod21)) 
+
+sod21collist <- data.frame(colnames(sod21)) #List of all columns with index
+pig21collist <- data.frame(colnames(pigw21)) #List of all columns with index
+
+
+#In the pigweb survey the last question was for respondents to provide their e-mail address and organisation for follow up questions. This is personal information which is not to be shared outside the limited timesframe of the project.
+#pigw21 = pigw21[1:(length(pigw21)-6)]
+
+
+
+#Apart from directly identifiable information it is important to ensure that combinations of information cannot be used to trace the respondents. In this case we have #therefore decided to separate the respondent data from the rest of the survey and scramble the rows. Thereby combinations such as year of first publication and major #source of finance cannot be used to identify respondents by a process of elimination. Note: This code was not used as a
+
+#This snippet take the first 9 columns of the pigw21 dataset, put them in a separate dataframe and shuffles each column before putting it back together.
+#pigrespondents = dplyr::select(pigw21, 1:9)
+#pigw21 = dplyr::select(pigw21, !1:9)
+#pigrespondents = as.data.frame(lapply(pigrespondents, sample))
+#pigw21 = cbind(pigrespondents, pigw21)
+#write_xlsx(pigw21, path = "pigw21s.xlsx")
+#The shuffled file is the file shared in the supplementary data and loaded at the start of this chunk. 
+
+#A problem with the surveys is that we do not have a way of knowing if an answer is a 0 or empty due to conscious lack of response by the respondent or due to the respondent not finishing the survey.
+
+#This sets the Data Frames to start at the first question. Each code chunk take the columns corresponding to a question and pass it to the pile when done.
+sod21Pile = dplyr::select(sod21, 1:9)
+
+pigw21Pile = dplyr::select(pigw21,1:3)
+```
+
+
+## Creating package for plotting_functions.R
+
+To assist in the package creation process, I will use the package "roxygen2" (a package recommended by Reproducibility course instructor Jan Ingemar Ohlsson).
+
+```{r, echo=F, message=FALSE, warning=FALSE}
+#Preparations for package creation
+#install.packages("roxygen2")  #Installing roxygen2, to create packages
+#library(roxygen2)  #Loading roxygen2
+```
+
+Creating package called "survey.plotting"
+
+```{r , echo=F, eval = F, message=FALSE, warning=FALSE}
+## These code lines have been changed to comments to avoid overwriting the created package  
+#create("survey.plotting")
+document("survey.plotting/R")
+```
+
+## Updated Script plotting_functions.R
+
+Saved copy of original script as "plotting_functions_package.R", have been updated to include operators to create the functions
+
+See script "plotting_functions_package.R" for changes
+
+## Installing newly created package (survey.plotting)
+
+```{r , echo=F, message=FALSE, warning=FALSE}
+install("survey.plotting")
+```
+
+## Testing newly created package (survey.plotting) on previous code from opendatasurvey.Rmd
+
+```{r , echo=F, message=FALSE, warning=FALSE}
+library("survey.plotting")
+```
+
+
+```{r question_1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 1"}
+#Each chunk take a number of columns from the sod21 and pigw21 dataframes and put them in a separate dataframe for processing which is numbered sequentially.
+#The sod21collist and pigw21collist dataframes provides index numbers for each dataframe to help selecting the right row. 
+sod21Q1 = as.data.frame(dplyr::select(sod21,10))
+sod21Pile = cbind(sod21Pile, sod21Q1)
+colnames(sod21Q1) = c('Q1')
+
+pigw21Q1 = as.data.frame(dplyr::select(pigw21, 4))
+pigw21Pile = cbind(pigw21Pile, pigw21Q1)
+
+#Setting columnnames and storing the question
+colnames(sod21Q1) = c('Q1')
+colnames(pigw21Q1) = c('Q1')
+Q1 = 'When was the last occasion that you published or submitted a manuscript to a journal?'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 1.
+Q1_levels = c("Within the last year", "1-2 years ago",
+              "3-5 years ago", "More than 5 years ago",
+              "I have never submitted a manuscript to a journal")
+
+Q1_data = format_question_likert(sod21Q1$Q1,
+                                 pigw21Q1$Q1,
+                                 Q1_levels)
+
+plot_likert(Q1_data,
+            Q1_levels,
+            Q1,
+            "Time since most recent publication")
+
+ks.test(Q1_data$response[Q1_data$survey == "SoD"],
+        Q1_data$response[Q1_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q1
+```
+
+
+```{r question_2, echo=T, eval = T, message=FALSE, warning=FALSE, fig.cap="Figure 2"}
+#Each chunk take a number of columns from the sod21 and pigw21 dataframes and put them in a separate dataframe for processing which is numbered sequentially.
+#The sod21collist and pigw21collist dataframes provides index numbers for each dataframe to help selecting the right row.
+sod21Q2 = as.data.frame(dplyr::select(sod21, 11))
+sod21Pile = cbind(sod21Pile, sod21Q2) #Add it to the frame for questions already done.
+
+
+pigw21Q2 = as.data.frame(dplyr::select(pigw21, 5))
+pigw21Pile = cbind(pigw21Pile, pigw21Q2) #Add it to the frame for questions already done.
+
+
+Q2 = 'In which year was your first peer-reviewed research article published?'
+colnames(sod21Q2) = c('Q2')
+colnames(pigw21Q2) = c('Q2')
+
+Q2_data = format_question_numeric(sod21Q2$Q2,
+                                  pigw21Q2$Q2)
+
+plot_numeric(Q2_data,
+             Q2,
+             "Year of first publication by respondent") +
+  coord_cartesian(xlim = c(1990, 2022))
+
+Q2KS = ks.test(Q2_data$response[Q2_data$survey == "SoD"],
+        Q2_data$response[Q2_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q2
+
+```
+
+
+```{r question_3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 3"}
+#This is a single choice question with an "other".
+sod21Q3 = as.data.frame(dplyr::select(sod21, 12))
+sod21Pile = cbind(sod21Pile, sod21Q3)
+
+pigw21Q3 = as.data.frame(dplyr::select(pigw21, 6))
+pigw21Pile = cbind(pigw21Pile, pigw21Q3)
+
+Q3 = 'Which of the following best describes your primary area of interest?'
+colnames(sod21Q3) = c('Q3')
+colnames(pigw21Q3) = c('Q3')
+
+## Fix the formatting of "Arts & Humanities"
+sod21Q3$Q3 = sub(sod21Q3$Q3,
+                 pattern = "Arts &amp; Humanities|Arts & Humanities",
+                 replacement = "Arts&Humanities")
+
+Q3_levels = c("Astronomy and planetary science",
+              "Biology",
+              "Business/Investment",
+              "Chemistry",
+              "Earth and Environmental Science",
+              "Engineering",
+              "Materials Science",
+              "Medicine",
+              "Physics",
+              "Social Sciences",
+              "Arts&Humanities",
+              "Other")
+
+Q3_data = format_question_single_choice(sod21Q3$Q3,
+                                        pigw21Q3$Q3,
+                                        Q3_levels)
+
+plot_single_choice(Q3_data,
+                   Q3_levels,
+                   Q3,
+                   "Area of interest")
+
+
+## Others responses
+unique(pigw21[,6])
+
+sod21Q3other = as.data.frame(dplyr::select(sod21, 1))
+sod21Pile = cbind(sod21Pile, sod21Q3other)
+
+
+pigw21Q3other = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q3other)
+
+```
+
+
+```{r question_4, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 4"}
+#This code chunk uses the multiple choice functions.
+Q4_levels = c("Yes, within my institution",
+              "Yes, within my country",
+              "Yes, internationally",
+              "No",
+              "I don't know")
+n_columns = length(Q4_levels)
+
+sod21Q4 = as.data.frame(dplyr::select(sod21, (14:sum(14,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21Q4)
+
+pigw21Q4 = as.data.frame(dplyr::select(pigw21, (9:sum(9,n_columns-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21Q4)
+
+Q4 = 'Does any of your current research involve collaboration with others?'
+
+Q4_data = format_question_multiple_choice(sod21Q4,
+                                          pigw21Q4,
+                                          Q4_levels)
+
+plot_multiple_choice(Q4_data,
+                     Q4_levels,
+                     Q4,
+                     "Response")
+```
+
+
+```{r question_5-7, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", results=FALSE, fig.cap=c("Figure 5", "Figure 6", "Figure 5-7")}
+#Question 5, 6 and 7 are similar and are therefore displayed together. Kolmogorov smirnov test output from the distributions are hidden in the automated output.
+
+#Data to be analysed in the chunk is copied to the Q5 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+sod21Q5 = as.data.frame(dplyr::select(sod21,19))
+sod21Pile = cbind(sod21Pile, sod21Q5)
+colnames(sod21Q5) = c('Q5')
+
+pigw21Q5 = as.data.frame(dplyr::select(pigw21, 14))
+pigw21Pile = cbind(pigw21Pile, pigw21Q5)
+
+
+#Setting columnnames and storing the question
+colnames(sod21Q5) = c('Q5')
+colnames(pigw21Q5) = c('Q5')
+Q5 = 'Making research articles open access should be common scholarly practice'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 6.
+Q5_levels = c("Strongly disagree", "Somewhat disagree",
+              "Neutral", "Somewhat agree",
+              "Strongly agree")
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q5$Q5 = reverseCode(pigw21Q5$Q5)
+
+Q5_data = format_question_likert(sod21Q5$Q5,
+                                 pigw21Q5$Q5,
+                                 Q5_levels)
+
+plot_likert(Q5_data,
+            Q5_levels,
+            Q5,
+            "Level of agreement")
+
+#Data to be analysed in the chunk is copied to the Q6 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+sod21Q6 = as.data.frame(dplyr::select(sod21,20))
+sod21Pile = cbind(sod21Pile, sod21Q6)
+colnames(sod21Q6) = c('Q6')
+
+pigw21Q6 = as.data.frame(dplyr::select(pigw21, 15))
+pigw21Pile = cbind(pigw21Pile, pigw21Q6)
+
+#Setting columnnames and storing the question
+colnames(sod21Q6) = c('Q6')
+colnames(pigw21Q6) = c('Q6')
+Q6 = 'Making research data openly available should be common scholarly practice'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 7.
+Q6_levels = c("Strongly disagree", "Somewhat disagree",
+              "Neutral", "Somewhat agree",
+              "Strongly agree")
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q6$Q6 = reverseCode(pigw21Q6$Q6)
+
+Q6_data = format_question_likert(sod21Q6$Q6,
+                                 pigw21Q6$Q6,
+                                 Q6_levels)
+
+plot_likert(Q6_data,
+            Q6_levels,
+            Q6,
+            "Level of agreement")
+
+#Question 8
+sod21Q7 = as.data.frame(dplyr::select(sod21,21))
+sod21Pile = cbind(sod21Pile, sod21Q7)
+colnames(sod21Q7) = c('Q7')
+
+pigw21Q7 = as.data.frame(dplyr::select(pigw21, 16))
+pigw21Pile = cbind(pigw21Pile, pigw21Q7)
+
+#Setting columnnames and storing the question
+colnames(sod21Q7) = c('Q7')
+colnames(pigw21Q7) = c('Q7')
+Q7 = 'Making all research outputs openly available should be common scholarly practice'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 8.
+Q7_levels = c("Strongly disagree", "Somewhat disagree",
+              "Neutral", "Somewhat agree",
+              "Strongly agree")
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q7$Q7 = reverseCode(pigw21Q7$Q7)
+
+Q7_data = format_question_likert(sod21Q7$Q7,
+                                 pigw21Q7$Q7,
+                                 Q7_levels)
+
+plot_likert(Q7_data,
+            Q7_levels,
+            Q7,
+            "Level of agreement")
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hypothesis that the two populations are the same. 
+
+SvPQ5 = ks.test(Q5_data$response[Q5_data$survey == "SoD"],
+        Q5_data$response[Q5_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q5
+
+SvPQ6 = ks.test(Q6_data$response[Q6_data$survey == "SoD"],
+        Q6_data$response[Q6_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q6
+
+SvPQ7 = ks.test(Q7_data$response[Q7_data$survey == "SoD"],
+        Q7_data$response[Q7_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q7
+
+
+PQ5vPQ7= ks.test(Q5_data$response[Q5_data$survey == "PigWeb"],
+        Q7_data$response[Q7_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q5 vs Q7
+
+SQ5vSQ7= ks.test(Q5_data$response[Q5_data$survey == "SoD"],
+        Q7_data$response[Q7_data$survey == "SoD"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q5 vs Q7
+
+```
+
+
+```{r question_8, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", results=FALSE, fig.cap="Figure 8"}
+
+#Data to be analysed in the chunk is copied to the Q8 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in sod21 and pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+sod21Q8 = as.data.frame(dplyr::select(sod21,22))
+sod21Pile = cbind(sod21Pile, sod21Q8)
+colnames(sod21Q8) = c('Q8')
+
+pigw21Q8 = as.data.frame(dplyr::select(pigw21, 17))
+pigw21Pile = cbind(pigw21Pile, pigw21Q8)
+
+#Setting columnnames and storing the question
+colnames(sod21Q8) = c('Q8')
+colnames(pigw21Q8) = c('Q8')
+Q8 = 'How familiar are you with the FAIR data principles in relation to open data?'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 9.
+Q8_levels = c("I am familiar with the FAIR data principles", "I have previously heard of the FAIR data principles but I am not familiar with them", "I have never heard of the FAIR data principles before now")
+#Reordering function for questions where this is necessary.
+#pigw21Q8$Q8 = reverseCode(pigw21Q8$Q8)
+
+Q8_data = format_question_likert(sod21Q8$Q8,
+                                 pigw21Q8$Q8,
+                                 Q8_levels)
+
+plot_likert(Q8_data,
+            Q8_levels,
+            Q8,
+            "Level of agreement")
+
+
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hyptohesis that the two populations are the same. 
+
+SvPQ8 = ks.test(Q8_data$response[Q8_data$survey == "SoD"],
+        Q8_data$response[Q8_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q8
+
+```
+
+
+```{r question_9, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 9", out.width="50%"}
+#This is a single choice question without an "other" with responses only in the PigWeb survey.
+
+pigw21Q9 = as.data.frame(dplyr::select(pigw21, 18))
+pigw21Pile = cbind(pigw21Pile, pigw21Q9)
+
+Q9 = 'Does your country have an open data policy relating to FAIR?'
+colnames(pigw21Q9) = c('Q9')
+
+Q9_levels = c("Yes", "No", "I don't know")
+
+#The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
+Q9_data = format_question_single_choice_pigweb(pigw21Q9$Q9,
+                                        Q9_levels)
+
+plot_single_choice(Q9_data,
+                   Q9_levels,
+                   Q9,
+                   "Area of interest")
+```
+
+
+```{r question_10, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 10", out.width="50%"}
+#This is a single choice question without an "other" with responses only in the PigWeb survey.
+
+pigw21Q10 = as.data.frame(dplyr::select(pigw21, 19))
+pigw21Pile = cbind(pigw21Pile, pigw21Q10)
+
+
+Q10 = 'Does your university/institute have an open data policy relating to FAIR?'
+colnames(pigw21Q10) = c('Q10')
+
+Q10_levels = c("Yes", "No", "I don't know")
+
+#The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
+Q10_data = format_question_single_choice_pigweb(pigw21Q10$Q10,
+                                        Q10_levels)
+
+plot_single_choice(Q10_data,
+                   Q10_levels,
+                   Q10,
+                   "Area of interest")
+```
+
+
+```{r question_11, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 11", out.width="50%"}
+#This is a single choice question without an "other" with responses only in the PigWeb survey.
+
+pigw21Q11 = as.data.frame(dplyr::select(pigw21, 20))
+pigw21Pile = cbind(pigw21Pile, pigw21Q11)
+
+
+Q11 = 'Do any of your main funders have an open data policy relating to FAIR?'
+colnames(pigw21Q11) = c('Q11')
+
+Q11_levels = c("Yes", "No", "I don't know")
+
+#The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
+Q11_data = format_question_single_choice_pigweb(pigw21Q11$Q11,
+                                        Q11_levels)
+
+plot_single_choice(Q11_data,
+                   Q11_levels,
+                   Q11,
+                   "Area of interest")
+```
+
+
+```{r question_12, echo=F, eval = T, message=FALSE, warning=FALSE, results=TRUE, fig.cap="Figure 12"}
+#So this is a single choice question with an "other".
+sod21Q12 = as.data.frame(dplyr::select(sod21, 23))
+sod21Pile = cbind(sod21Pile, sod21Q12)
+
+
+pigw21Q12 = as.data.frame(dplyr::select(pigw21, 21))
+pigw21Pile = cbind(pigw21Pile, pigw21Q12)
+
+Q12 = 'Do you curate/prepare your data for sharing during or shortly after the data collection process either privately or publicly?'
+colnames(sod21Q12) = c('Q12')
+colnames(pigw21Q12) = c('Q12')
+
+#The State of Open Data survey contain som unfortunate formating as it seems to be made up of multiple different surveys stitched together and some questions have been rephrased. 
+#A reconciliation step is therefore necessary.
+unique(sod21Q12)
+
+sod21Q12[sod21Q12 == "Yes, all data"] = "Yes, all data collected"
+sod21Q12[sod21Q12 == "Yes, some data"] = "Yes, some of the data collected"
+sod21Q12[sod21Q12 == "No , other (please specify)"] = "No, other (please specify)"
+sod21Q12[sod21Q12 == "No, other (please specify):"] = "No, other (please specify)"
+sod21Q12[sod21Q12 == "No, we don't have the resource to do this but would like to"] = "No, we don't have the resource to do this but we would like to"
+sod21Q12[sod21Q12 == "No, it's not important with our data"] = "No, its not important with our data"
+
+unique(sod21Q12)
+
+Q12_levels = c("Yes, all data collected",
+              "Yes, some of the data collected",
+              "Yes, but only data shared with colleagues or beyond",
+              "Yes, but only data shared publicly",
+              "No, its not important with our data",
+              "No, we don't have the resource to do this but we would like to",
+              "No, other (please specify)")
+
+Q12_data = format_question_single_choice(sod21Q12$Q12,
+                                        pigw21Q12$Q12,
+                                        Q12_levels)
+
+plot_single_choice(Q12_data,
+                   Q12_levels,
+                   Q12,
+                   "Data curation practices by the respondent")
+
+
+## Others responses
+#unique(pigw21[,1])
+#unique(sod21[,1])
+
+sod21Q12other = as.data.frame(dplyr::select(sod21, 1))
+sod21Pile = cbind(sod21Pile, sod21Q12other)
+
+pigw21Q12other = as.data.frame(dplyr::select(pigw21, 22))
+pigw21Pile = cbind(pigw21Pile, pigw21Q12other)
+
+```
+```{r question_13, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 13"}
+#This code chunk uses the multiple choice functions.
+Q13_levels = c("Yes, it was a requirement of my current funder",
+              "Yes, it was a requirement of my institution",
+              "Yes, it was a requirement of the journal I plan to submit to",
+              "Yes but not as a result of any requirement",
+              "No",
+              "I don't know")
+n_columns = length(Q13_levels)
+
+
+sod21Q13 = as.data.frame(dplyr::select(sod21, (25:sum(25,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21Q13)
+
+pigw21Q13 = as.data.frame(dplyr::select(pigw21, (23:sum(23,n_columns,-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21Q13)
+
+Q13 = 'Have you created a data management plan for your current research?'
+
+Q13_data = format_question_multiple_choice(sod21Q13,
+                                          pigw21Q13,
+                                          Q13_levels)
+
+plot_multiple_choice(Q13_data,
+                     Q13_levels,
+                     Q13,
+                     "Response")
+```
+
+
+```{r question_14, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", results=FALSE, fig.cap="Figure 14"}
+
+#This question is only in the Pigweb study Data to be analysed in the chunk is copied to the Q14 data frame and the pile before being removed from the data frame. The process is repeated for each question in it's respective chunk
+#Note rerunning the below lines will move the currently first column in pigw21, so running the code immediately below a second times means that the wrong question will be processed. 
+
+
+pigw21Q14 = as.data.frame(dplyr::select(pigw21, 29))
+pigw21Pile = cbind(pigw21Pile, pigw21Q14)
+
+#Setting columnnames and storing the question
+colnames(pigw21Q14) = c('Q14')
+Q14 = 'To what extent do you think you make your data open in compliance with FAIR?'
+
+#unique(sod21Q2) #unique() is used to identify the unique answers of the question. It is commented out here to make the Notebook tidier. 
+
+#Setting the answer options to Question 9.
+Q14_levels = c("Very much", "Somewhat", "Neutral", "Not very much", "Not at all", "I don't know")
+#Reordering function for questions where this is necessary.
+#pigw21Q14$Q14 = reverseCode(pigw21Q14$Q14)
+
+Q14_data = format_question_likert_pigweb(pigw21Q14$Q14,
+                                 Q14_levels)
+
+plot_likert(Q14_data,
+            Q14_levels,
+            Q14,
+            "Level of agreement")
+
+```
+
+
+```{r question_15, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 15"}
+#This code chunk uses the multiple choice functions.
+Q15_levels = c("Open data software provider",
+              "Colleague/Supervisor",
+              "Web-search",
+              "Institutional Library",
+              "Publisher",
+              "Funder",
+              "Research office/In-house institutional expertise",
+              "Professional 3rd party",
+              "Repository",
+              "I would not require help making my data openly available",
+              "Other (please specify)"
+              )
+n_columns = length(Q15_levels)
+
+pigw21Q15 = as.data.frame(dplyr::select(pigw21, (30:sum(30,n_columns,-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21Q15)
+
+Q15 = 'If you required help in making your research data openly available, which sources would you rely on?'
+
+Q15_data = format_question_multiple_choice_pigweb(pigw21Q15,
+                                          Q15_levels)
+
+plot_multiple_choice(Q15_data,
+                     Q15_levels,
+                     Q15,
+                     "Response")
+```
+
+
+## Conclusion
+
+The newly created package appears to be working correctly.
+
