@@ -1085,7 +1085,7 @@ sod21Q17 = as.data.frame(dplyr::select(sod21,61))
 sod21Pile = cbind(sod21Pile, sod21Q17)
 colnames(sod21Q17) = c('Q17')
 
-pigw21Q17 = as.data.frame(dplyr::select(pigw21, 421))
+pigw21Q17 = as.data.frame(dplyr::select(pigw21, 43))
 pigw21Pile = cbind(pigw21Pile, pigw21Q17)
 
 
