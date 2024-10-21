@@ -1,7 +1,7 @@
 ---
 title: "Open data survey"
 author: "Tomas Klingström"
-date: "2022-05-11"
+date: "2024-10-21"
 output: 
   html_document:
     code_folding: hide
@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This report is designed with two purposes in mind. 
 
 If read directly without opening the code chunks the report provides a comparative analysis of the State of Open Data survey 2021 published by Digital Science (https://doi.org/10.6084/m9.figshare.17081231) and a community specific survey to survey the State of Open Data and attitudes towards FAIR data policies conducted by the Pigweb consortium. The Pigweb study is built on the template provided by the State of Open Data Survey to maximize the comparability between the pig research community participating in Pigweb and the much larger study conducted by Digital Science and Springer Nature. It does however also contain some specific questions regarding experiences with infrastructure and services supporting FAIR data.
+
 
 Opening the code chunks provided in the document or downloading the github repository (https://github.com/SGBC/survey) enables researchers to copy the report and reuse it as a template for their own comparative studies. The document is divided into a number of code chunks with data pruning and functions at the top followed by the report with the code chunks generating data interspersed between them. The code in each chunk evaluating questions can be broken down into four parts:
 
