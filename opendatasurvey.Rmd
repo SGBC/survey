@@ -652,14 +652,186 @@ plot_multiple_choice(Q15_data,
                      "Response")
 ```
 
+#Question 16
+
+```{r question_16, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 16"}
+#Creating data sets for Q16 (In otherwords: Isolating the responses of Q16 in the two surveys and adding this to a compiled data set, one for each survey)
+sod21Q16 = as.data.frame(dplyr::select(sod21,60))
+sod21Pile = cbind(sod21Pile, sod21Q16)
+colnames(sod21Q16) = c('Q16')
+
+pigw21Q16 = as.data.frame(dplyr::select(pigw21, 42))
+pigw21Pile = cbind(pigw21Pile, pigw21Q16)
+
+
+#Setting columnnames and storing the question for Q16
+colnames(sod21Q16) = c('Q16')
+colnames(pigw21Q16) = c('Q16')
+Q16 = 'Replicating studies (use of your data as a reference to determine whether they can be repeated under similar conditions)'
+
+#Setting the answer options to Q16.
+Q16_levels = c("Extremely comfortable", "Somewhat confortable",
+              "Neutral", "Somewhat uncomfortable",
+              "Extremely uncomfortable", "I don't know")
+
+#The Pigweb scale is correctly formatted for this question (Q16), thus no need to reverse the question.
+#pigw21Q16$Q16 = reverseCode(pigw21Q16$Q16) 
+
+Q16_data = format_question_likert(sod21Q16$Q16, #Making the answers to Q16 in the two questionnaires comparable, merging them to one data frame 
+                                 pigw21Q16$Q16,
+                                 Q16_levels)
+
+plot_likert(Q16_data,  #Plotting the Level of agreement between the two surveys
+            Q16_levels,
+            Q16,
+            "Level of agreement")
+
+
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hyptohesis that the two populations are the same. 
+
+SvPQ16 = ks.test(Q16_data$response[Q16_data$survey == "SoD"],
+        Q16_data$response[Q16_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q16
+```
+
+# Question 17
+
+
+```{r question_17, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 17"}
+#Creating data sets for Q17
+sod21Q17 = as.data.frame(dplyr::select(sod21,61))
+sod21Pile = cbind(sod21Pile, sod21Q17)
+colnames(sod21Q17) = c('Q17')
+
+pigw21Q17 = as.data.frame(dplyr::select(pigw21, 43))
+pigw21Pile = cbind(pigw21Pile, pigw21Q17)
+
+
+#Setting columnnames and storing the question for Q17
+colnames(sod21Q17) = c('Q17')
+colnames(pigw21Q17) = c('Q17')
+Q17 = 'Reanalysis (using a different method to analyse your data set)'
+
+#Setting the answer options to Q17.
+Q17_levels = c("Extremely comfortable", "Somewhat confortable",
+              "Neutral", "Somewhat uncomfortable",
+              "Extremely uncomfortable", "I don't know")
+
+#The Pigweb scale is correctly formatted for this question (Q17), thus no need to reverse the question.
+#pigw21Q16$Q16 = reverseCode(pigw21Q17$Q17) 
+
+
+Q17_data = format_question_likert(sod21Q17$Q17, #Making the answers to Q17 in the two questionnaires comparable, merging them to one data frame 
+                                 pigw21Q17$Q17,
+                                 Q17_levels)
+
+plot_likert(Q17_data, #Plotting the Level of agreement between the two surveys
+            Q17_levels,
+            Q17,
+            "Level of agreement")
+
+
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hyptohesis that the two populations are the same. 
+
+SvPQ17 = ks.test(Q17_data$response[Q17_data$survey == "SoD"],
+        Q17_data$response[Q17_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q17
+```
+
+# Question 18
+
+```{r question_Q18, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure Q18"}
+#Question 18 
+#To what extent are you comfortable with others using your data for the following
+pigw21Q18 = as.data.frame(dplyr::select(pigw21, 44))
+pigw21Pile = cbind(pigw21Pile, pigw21Q18)
+
+#Setting column names and storing the question
+colnames(pigw21Q18) = c('Q18')
+Q18 = 'To what extent are you comfortable with others using your data for the following: Reinterpretation using your data as is to answer another question.'
+
+#Setting the answer options to Question Q18.
+Q18_levels = c("Extremely comfortable", "Somewhat", "Neutral", "Somewhat uncomfortable", "extremely uncomfortable", "I don't know")
+
+sod21P1 = as.data.frame(dplyr::select(sod21,62))
+sod21Pile = cbind(sod21Pile, sod21P1)
+colnames(sod21P1) = c('Q18')
+
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q18$Q18 = reverseCode(pigw21Q18$Q18)
+
+Q18_data = format_question_likert(sod21P1$Q18,
+                                 pigw21Q18$Q18,
+                                 Q18_levels)
+
+#Likert plot
+plot_likert(Q18_data,
+            Q18_levels,
+            Q18,
+            "Level of comfort")
+
+#This section test for if there is statistically significant difference in the respondent groups
+#with the null hypothesis that the two populations are the same. 
+
+ks.test(Q18_data$response[Q18_data$survey == "SoD"],
+        Q18_data$response[Q18_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q18
+
+#check number of NA's
+sum(is.na(Q18_data$response))
+```
+
+# Question 19
+
+
+```{r question_Q19, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure Q19"}
+#Paulina question 2
+#To what extent are you comfortable with others using your data for the following
+pigw21Q19 = as.data.frame(dplyr::select(pigw21, 45))
+pigw21Pile = cbind(pigw21Pile, pigw21Q19)
+
+#Setting column names and storing the question
+colnames(pigw21Q19) = c('Q19')
+Q19 = 'To what extent are you comfortable with others using your data for the following: Isolated reuse (reanalysing your data to answer a new question).'
+
+#Setting the answer options to Question Q19.
+Q19_levels = c("Extremely comfortable", "Somewhat", "Neutral", "Somewhat uncomfortable", "extremely uncomfortable", "I don't know")
+
+sod21Q19 = as.data.frame(dplyr::select(sod21,63))
+sod21Pile = cbind(sod21Pile, sod21Q19)
+colnames(sod21Q19) = c('Q19')
+
+#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
+pigw21Q19$Q19 = reverseCode(pigw21Q19$Q19)
+
+
+Q19_data = format_question_likert(sod21Q19$Q19,
+                                 pigw21Q19$Q19,
+                                 Q19_levels)
+
+#Likert plot
+plot_likert(Q19_data,
+            Q19_levels,
+            Q19,
+            "Level of comfort")
+
+#This section test for if there is statistically significant difference in the respondent groups
+#with the null hypothesis that the two populations are the same. 
+
+ks.test(Q19_data$response[Q19_data$survey == "SoD"],
+        Q19_data$response[Q19_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q19
+
+```
+
 
 # Question 20
 
 To what extent are you comfortable with others using your data for the following:
-* Combination reuse (Reanalyzing your data in combination with other data sets to answer a new question
-
-The question is answered on a 5 point likert scale (6 points including 'I don't know')
-
 
 ```{r question_20, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", results=FALSE, fig.cap=c("Figure 20")}
 
@@ -713,6 +885,98 @@ plot_likert(Q20_data,
             "Level of comfort")
 
 ```
+
+# Question 21
+
+```{r question_21, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 21"}
+#This code chunk uses the multiple choice functions.
+
+#Response levels of Q21
+Q21_levels = c("Contains sensitive information or require study participant permissions before sharing",
+              "Lack of time to deposit data",
+              "Costs of sharing data",
+              "Unsure about copyright and data licensing",
+              "Data are too large to share",
+              "I do not know what repository to use",
+              "I am unsure I have permission from my funder or institute to share my data",
+              "Data are too small or unimportant",
+              "Organising data in a presentable and usable way",
+              "Concerns about misuse of data",
+              "Not receiving appropriate credit or acknowledgement",
+              "Another lab may make a different interpretation of my data",
+              "Another lab may 'scoop' me to a discovery",
+              "I'm not sure I've exhausted all potential findings yet",
+              "Others may find errors in my data",
+              "Others may not be able to repeat my findings",
+              "I have no desire to share my findings",
+              "I have no problems/concerns about sharing data",
+              "Other")
+
+n_columns = length(Q21_levels) #Calculating number of columns with answers to question 21 (One for each level of Q21 above)  
+
+sod21Q21 = as.data.frame(dplyr::select(sod21, (65:sum(65,n_columns,-1)))) #Summarizing the responses for all levels of Q21, except the "Other" category into one new data set
+sod21Pile = cbind(sod21Pile, sod21Q21) #Adding these to the Pile
+
+pigw21Q21 = as.data.frame(dplyr::select(pigw21, (47:sum(47,n_columns,-1)))) #Summarizing the responses for all levels of Q21, except the "Other" category into one new data set
+pigw21Pile = cbind(pigw21Pile, pigw21Q21) #Adding these to the Pile
+
+Q21 = "What problems/concerns, if any, do you have with sharing datasets?" #Question 21 and title of Figure 21
+
+Q21_data = format_question_multiple_choice(sod21Q21,   #Making the answers to Q21 in the two questionnaires comparable, merging them to one data frame 
+                                          pigw21Q21,
+                                          Q21_levels)
+
+plot_multiple_choice(Q21_data,     #Plotting the responses without the "Other" option
+                     Q21_levels,
+                     Q21,
+                     "Response")
+
+## Others responses for Q21
+#unique(pigw21[,65])       #Changed to comment to avoid long list with all of the different answers
+#unique(sod21[,84])        #Changed to comment to avoid long list with all of the different answers
+
+sod21Q21other = as.data.frame(dplyr::select(sod21, 1))   
+sod21Pile = cbind(sod21Pile, sod21Q21other)  
+
+
+pigw21Q21other = as.data.frame(dplyr::select(pigw21, 1))
+pigw21Pile = cbind(pigw21Pile, pigw21Q21other)
+```
+
+
+
+```{r question_Q22, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure Q22"}
+#What areas (if any) do you feel you need help with in regard to making your research data openly available.
+#This code chunk uses the multiple choice functions.
+Q22_levels = c("Finding the time to manage my data",
+              "Data management plans",
+              "Copyright/Licensing of data",
+              "Data management policies",
+              "Curation of data",
+              "Finding appropiate repositories for deposition of data",
+              "None of the abobe",
+              "Other")
+n_columns = length(Q22_levels)
+
+sod21Q22 = as.data.frame(dplyr::select(sod21, (87:sum(87,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21Q22)
+
+pigw21Q22 = as.data.frame(dplyr::select(pigw21, (67:sum(67,n_columns-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21Q22)
+
+Q22 = 'What areas (if any) do you feel you need help with in regard to making your research data openly available'
+
+
+Q22_data = format_question_multiple_choice(sod21Q22,
+                                          pigw21Q22,
+                                          Q22_levels)
+
+plot_multiple_choice(Q22_data,
+                     Q22_levels,
+                     Q22,
+                     "Response")
+```
+
 # Question 27
 
 How do you share your research data with a public audience. Please select all that apply
@@ -917,292 +1181,28 @@ plot_single_choice(Q30_data,
 
 ```
 
-
-
-
-```{r question_QP1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP1"}
-#Paulina question 1
-#To what extent are you comfortable with others using your data for the following
-#P1 for paulina question1
-pigw21QP1 = as.data.frame(dplyr::select(pigw21, 44))
-pigw21Pile = cbind(pigw21Pile, pigw21QP1)
-
-#Setting column names and storing the question
-colnames(pigw21QP1) = c('QP1')
-QP1 = 'To what extent are you comfortable with others using your data for the following: Reinterpretation using your data as is to answer another question.'
-
-#Setting the answer options to Question QP1.
-QP1_levels = c("Extremely comfortable", "Somewhat", "Neutral", "Somewhat uncomfortable", "extremely uncomfortable", "I don't know")
-
-sod21P1 = as.data.frame(dplyr::select(sod21,62))
-sod21Pile = cbind(sod21Pile, sod21P1)
-colnames(sod21P1) = c('QP1')
-
-#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
-pigw21QP1$QP1 = reverseCode(pigw21QP1$QP1)
-?reverse.code
-
-QP1_data = format_question_likert(sod21P1$QP1,
-                                 pigw21QP1$QP1,
-                                 QP1_levels)
-
-#Likert plot
-plot_likert(QP1_data,
-            QP1_levels,
-            QP1,
-            "Level of comfort")
-
-#This section test for if there is statistically significant difference in the respondent groups
-#with the null hypothesis that the two populations are the same. 
-
-ks.test(QP1_data$response[QP1_data$survey == "SoD"],
-        QP1_data$response[QP1_data$survey == "PigWeb"],
-        ifresult = FALSE) #Kolmogorov-Smirnov test for QP1
-
-#check number of NA's
-sum(is.na(QP1_data$response))
-```
-
-```{r question_QP2, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP2"}
-#Paulina question 2
-#To what extent are you comfortable with others using your data for the following
-pigw21QP2 = as.data.frame(dplyr::select(pigw21, 45))
-pigw21Pile = cbind(pigw21Pile, pigw21QP2)
-
-#Setting column names and storing the question
-colnames(pigw21QP2) = c('QP2')
-QP2 = 'To what extent are you comfortable with others using your data for the following: Isolated reuse (reanalysing your data to answer a new question).'
-
-#Setting the answer options to Question QP2.
-QP2_levels = c("Extremely comfortable", "Somewhat", "Neutral", "Somewhat uncomfortable", "extremely uncomfortable", "I don't know")
-
-sod21QP2 = as.data.frame(dplyr::select(sod21,63))
-sod21Pile = cbind(sod21Pile, sod21QP2)
-colnames(sod21QP2) = c('QP2')
-
-#The Pigweb scale puts strong agreement as 1 and strong disagreement as 5, this needs to be reversed for the question.
-pigw21QP2$QP2 = reverseCode(pigw21QP2$QP2)
-
-
-QP2_data = format_question_likert(sod21QP2$QP2,
-                                 pigw21QP2$QP2,
-                                 QP2_levels)
-
-#Likert plot
-plot_likert(QP2_data,
-            QP2_levels,
-            QP2,
-            "Level of comfort")
-
-#This section test for if there is statistically significant difference in the respondent groups
-#with the null hypothesis that the two populations are the same. 
-
-ks.test(QP2_data$response[QP2_data$survey == "SoD"],
-        QP2_data$response[QP2_data$survey == "PigWeb"],
-        ifresult = FALSE) #Kolmogorov-Smirnov test for QP2
-
-```
-
-```{r question_QP3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP3"}
-#Paulina Q3
-#What areas (if any) do you feel you need help with in regard to making your research data openly available.
-#This code chunk uses the multiple choice functions.
-QP3_levels = c("Finding the time to manage my data",
-              "Data management plans",
-              "Copyright/Licensing of data",
-              "Data management policies",
-              "Curation of data",
-              "Finding appropiate repositories for deposition of data",
-              "None of the abobe",
-              "Other")
-n_columns = length(QP3_levels)
-
-sod21QP3 = as.data.frame(dplyr::select(sod21, (87:sum(87,n_columns,-1))))
-sod21Pile = cbind(sod21Pile, sod21QP3)
-
-pigw21QP3 = as.data.frame(dplyr::select(pigw21, (67:sum(67,n_columns-1))))
-pigw21Pile = cbind(pigw21Pile, pigw21QP3)
-
-QP3 = 'What areas (if any) do you feel you need help with in regard to making your research data openly available'
-
-
-QP3_data = format_question_multiple_choice(sod21QP3,
-                                          pigw21QP3,
-                                          QP3_levels)
-
-plot_multiple_choice(QP3_data,
-                     QP3_levels,
-                     QP3,
-                     "Response")
-```
-
-
-```{r question_16, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 16"}
-#Creating data sets for Q16 (In otherwords: Isolating the responses of Q16 in the two surveys and adding this to a compiled data set, one for each survey)
-sod21Q16 = as.data.frame(dplyr::select(sod21,60))
-sod21Pile = cbind(sod21Pile, sod21Q16)
-colnames(sod21Q16) = c('Q16')
-
-pigw21Q16 = as.data.frame(dplyr::select(pigw21, 42))
-pigw21Pile = cbind(pigw21Pile, pigw21Q16)
-
-
-#Setting columnnames and storing the question for Q16
-colnames(sod21Q16) = c('Q16')
-colnames(pigw21Q16) = c('Q16')
-Q16 = 'Replicating studies (use of your data as a reference to determine whether they can be repeated under similar conditions)'
-
-#Setting the answer options to Q16.
-Q16_levels = c("Extremely comfortable", "Somewhat confortable",
-              "Neutral", "Somewhat uncomfortable",
-              "Extremely uncomfortable", "I don't know")
-
-#The Pigweb scale is correctly formatted for this question (Q16), thus no need to reverse the question.
-#pigw21Q16$Q16 = reverseCode(pigw21Q16$Q16) 
-
-Q16_data = format_question_likert(sod21Q16$Q16, #Making the answers to Q16 in the two questionnaires comparable, merging them to one data frame 
-                                 pigw21Q16$Q16,
-                                 Q16_levels)
-
-plot_likert(Q16_data,  #Plotting the Level of agreement between the two surveys
-            Q16_levels,
-            Q16,
-            "Level of agreement")
-
-
-
-#This section test for if there is statistically significant difference in the respondent groups¨
-#with the null hyptohesis that the two populations are the same. 
-
-SvPQ16 = ks.test(Q16_data$response[Q16_data$survey == "SoD"],
-        Q16_data$response[Q16_data$survey == "PigWeb"],
-        ifresult = FALSE) #Kolmogorov-Smirnov test for Q16
-```
-
-
-
-```{r question_17, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 17"}
-#Creating data sets for Q17
-sod21Q17 = as.data.frame(dplyr::select(sod21,61))
-sod21Pile = cbind(sod21Pile, sod21Q17)
-colnames(sod21Q17) = c('Q17')
-
-pigw21Q17 = as.data.frame(dplyr::select(pigw21, 43))
-pigw21Pile = cbind(pigw21Pile, pigw21Q17)
-
-
-#Setting columnnames and storing the question for Q17
-colnames(sod21Q17) = c('Q17')
-colnames(pigw21Q17) = c('Q17')
-Q17 = 'Reanalysis (using a different method to analyse your data set)'
-
-#Setting the answer options to Q17.
-Q17_levels = c("Extremely comfortable", "Somewhat confortable",
-              "Neutral", "Somewhat uncomfortable",
-              "Extremely uncomfortable", "I don't know")
-
-#The Pigweb scale is correctly formatted for this question (Q17), thus no need to reverse the question.
-#pigw21Q16$Q16 = reverseCode(pigw21Q17$Q17) 
-
-
-Q17_data = format_question_likert(sod21Q17$Q17, #Making the answers to Q17 in the two questionnaires comparable, merging them to one data frame 
-                                 pigw21Q17$Q17,
-                                 Q17_levels)
-
-plot_likert(Q17_data, #Plotting the Level of agreement between the two surveys
-            Q17_levels,
-            Q17,
-            "Level of agreement")
-
-
-
-#This section test for if there is statistically significant difference in the respondent groups¨
-#with the null hyptohesis that the two populations are the same. 
-
-SvPQ17 = ks.test(Q17_data$response[Q17_data$survey == "SoD"],
-        Q17_data$response[Q17_data$survey == "PigWeb"],
-        ifresult = FALSE) #Kolmogorov-Smirnov test for Q17
-```
-
-
-```{r question_21, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 21"}
-#This code chunk uses the multiple choice functions.
-
-#Response levels of Q21
-Q21_levels = c("Contains sensitive information or require study participant permissions before sharing",
-              "Lack of time to deposit data",
-              "Costs of sharing data",
-              "Unsure about copyright and data licensing",
-              "Data are too large to share",
-              "I do not know what repository to use",
-              "I am unsure I have permission from my funder or institute to share my data",
-              "Data are too small or unimportant",
-              "Organising data in a presentable and usable way",
-              "Concerns about misuse of data",
-              "Not receiving appropriate credit or acknowledgement",
-              "Another lab may make a different interpretation of my data",
-              "Another lab may 'scoop' me to a discovery",
-              "I'm not sure I've exhausted all potential findings yet",
-              "Others may find errors in my data",
-              "Others may not be able to repeat my findings",
-              "I have no desire to share my findings",
-              "I have no problems/concerns about sharing data",
-              "Other")
-
-n_columns = length(Q21_levels) #Calculating number of columns with answers to question 21 (One for each level of Q21 above)  
-
-sod21Q21 = as.data.frame(dplyr::select(sod21, (65:sum(65,n_columns,-1)))) #Summarizing the responses for all levels of Q21, except the "Other" category into one new data set
-sod21Pile = cbind(sod21Pile, sod21Q21) #Adding these to the Pile
-
-pigw21Q21 = as.data.frame(dplyr::select(pigw21, (47:sum(47,n_columns,-1)))) #Summarizing the responses for all levels of Q21, except the "Other" category into one new data set
-pigw21Pile = cbind(pigw21Pile, pigw21Q21) #Adding these to the Pile
-
-Q21 = "What problems/concerns, if any, do you have with sharing datasets?" #Question 21 and title of Figure 21
-
-Q21_data = format_question_multiple_choice(sod21Q21,   #Making the answers to Q21 in the two questionnaires comparable, merging them to one data frame 
-                                          pigw21Q21,
-                                          Q21_levels)
-
-plot_multiple_choice(Q21_data,     #Plotting the responses without the "Other" option
-                     Q21_levels,
-                     Q21,
-                     "Response")
-
-## Others responses for Q21
-#unique(pigw21[,65])       #Changed to comment to avoid long list with all of the different answers
-#unique(sod21[,84])        #Changed to comment to avoid long list with all of the different answers
-
-sod21Q21other = as.data.frame(dplyr::select(sod21, 1))   
-sod21Pile = cbind(sod21Pile, sod21Q21other)  
-
-
-pigw21Q21other = as.data.frame(dplyr::select(pigw21, 1))
-pigw21Pile = cbind(pigw21Pile, pigw21Q21other)
-```
-
-
-```{r question_45, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 45"}
-#Creating data sets for Q45/Isolating the responses from Q45
-pigw21Q45 = as.data.frame(dplyr::select(pigw21, 114))
-pigw21Pile = cbind(pigw21Pile, pigw21Q45)
-
-sod21Q45 = as.data.frame(dplyr::select(sod21, 86))
-sod21Pile = cbind(sod21Pile, sod21Q45)
-
-#Saving the Question text and changing the column name with the responses in the two data frames to Q45 
-Q45 = "Have you ever been 'scooped' (i.e. have another lab published an result similar to your own before you do) as a result of data you have previously shared?"
-colnames(pigw21Q45) = c('Q45')
-colnames(sod21Q45) = c('Q45')
-
-Q45_levels = c("Yes", "No", "I don't know") #The different levels/categories of the questions
-
-Q45_data = format_question_single_choice(sod21Q45$Q45, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
-                                         pigw21Q45$Q45,
-                                         Q45_levels)
-
-plot_single_choice(Q45_data, #Plotting the responses
-                   Q45_levels,
-                   Q45,
+```{r question_31, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 45"}
+#Creating data sets for Q31/Isolating the responses from Q31
+pigw21Q31 = as.data.frame(dplyr::select(pigw21, 114))
+pigw21Pile = cbind(pigw21Pile, pigw21Q31)
+
+sod21Q31 = as.data.frame(dplyr::select(sod21, 86))
+sod21Pile = cbind(sod21Pile, sod21Q31)
+
+#Saving the Question text and changing the column name with the responses in the two data frames to Q31 
+Q31 = "Have you ever been 'scooped' (i.e. have another lab published an result similar to your own before you do) as a result of data you have previously shared?"
+colnames(pigw21Q31) = c('Q31')
+colnames(sod21Q31) = c('Q31')
+
+Q31_levels = c("Yes", "No", "I don't know") #The different levels/categories of the questions
+
+Q31_data = format_question_single_choice(sod21Q31$Q31, #Making the answers to Q31 in the two questionnaires comparable, merging them to one data frame 
+                                         pigw21Q31$Q31,
+                                         Q31_levels)
+
+plot_single_choice(Q31_data, #Plotting the responses
+                   Q31_levels,
+                   Q31,
                    "Response")
 ```
 
