@@ -1205,28 +1205,3 @@ plot_single_choice(Q45_data, #Plotting the responses
                    "Response")
 ```
 
-
-```{r question_46, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Pretend it is a new questions"}
-#Creating data sets for Q45/Isolating the responses from Q45
-pigw21Q45 = as.data.frame(dplyr::select(pigw21, 114))
-pigw21Pile = cbind(pigw21Pile, pigw21Q45)
-
-sod21Q45 = as.data.frame(dplyr::select(sod21, 86))
-sod21Pile = cbind(sod21Pile, sod21Q45)
-
-#Saving the Question text and changing the column name with the responses in the two data frames to Q45 
-Q45 = "NewQuestion' (i.e. have another lab published an result similar to your own before you do) as a result of data you have previously shared?"
-colnames(pigw21Q45) = c('Q45')
-colnames(sod21Q45) = c('Q45')
-
-Q45_levels = c("Yes", "No", "I don't know") #The different levels/categories of the questions
-
-Q45_data = format_question_single_choice(sod21Q45$Q45, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
-                                         pigw21Q45$Q45,
-                                         Q45_levels)
-
-plot_single_choice(Q45_data, #Plotting the responses
-                   Q45_levels,
-                   Q45,
-                   "Response")
-```
