@@ -50,6 +50,7 @@ predicted_mpg <- predict(model, newdata = data.frame(wt = weight, cyl = cylinder
   return(predicted_mpg)
 }
 ```
+##vbvbvvvb
 
 ```{r}
 predicted_mpg <- fuel_consumption_predict(3, 6)  
