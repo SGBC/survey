@@ -1,0 +1,63 @@
+---
+title: "tTest"
+author: "Ozge Kozakli"
+date: "2024-10-21"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+```
+
+##Load and Explore the Data
+```{r cars}
+data("mtcars")
+summary(mtcars)
+```
+```{r}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  labs(title = "Weight vs. Fuel Consumption Relationship",
+       x = "Weight (1000 lbs)",
+       y = "Fuel Consumption (MPG)") +
+  theme_minimal()
+
+```
+```{r}
+model <- lm(mpg ~ wt + cyl, data = mtcars)
+summary(model)
+```
+
+
+```{r}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Regression of Weight vs. Fuel Consumption",
+       x = "Weight (1000 lbs)",
+       y = "Fuel Consumption (MPG)") +
+  theme_minimal()
+
+```
+##Predicts fuel consumption based on vehicle weight and the number of cylinders.
+```{r}
+fuel_consumption_predict <- function(weight, cylinders) {
+predicted_mpg <- predict(model, newdata = data.frame(wt = weight, cyl = cylinders))
+  return(predicted_mpg)
+}
+```
+
+```{r}
+predicted_mpg <- fuel_consumption_predict(3, 6)  
+print(predicted_mpg)
+```
+
+
+
+
+
+
