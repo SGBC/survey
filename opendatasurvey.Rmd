@@ -1190,22 +1190,21 @@ plot_single_choice(Q31_data, #Plotting the responses
                    "Response")
 ```
 
-
 # Question 32
 
 **Would you like more guidance on how to comply with the policies of any of the below on making your research data openly available?**
-  
-  
-  ```{r question_32, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 32"}
+
+
+```{r question_32, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 32"}
 
 # Answered by Yishu
 
 #This code chunk uses the multiple choice functions.
 Q32_levels = c("Funder",
-               "Institution",
-               "Department or faculty",
-               "Government",
-               "None of the above")
+              "Institution",
+              "Department or faculty",
+              "Government",
+              "None of the above")
 n_columns = length(Q32_levels)
 
 # Double check that the columns correspond to the right question:
@@ -1221,8 +1220,8 @@ pigw21Pile = cbind(pigw21Pile, pigw21Q32)
 Q32 = 'Would you like more guidance on how to comply with the policies of any of the below on making your research data openly available?'
 
 Q32_data = format_question_multiple_choice(sod21Q32,
-                                           pigw21Q32,
-                                           Q32_levels)
+                                          pigw21Q32,
+                                          Q32_levels)
 
 plot_multiple_choice(Q32_data,
                      Q32_levels,
@@ -1230,3 +1229,57 @@ plot_multiple_choice(Q32_data,
                      "Response")
 ```
 
+
+# Question 33
+
+**How would you rate the importance of the following with reference to determining the quality of an openly accessible data set? The data are available from a publicly available repository.**
+  
+```{r question_33, echo=T, eval = T, message=FALSE, warning=FALSE, results=T, fig.cap="Figure 33"}
+
+# Answered by Yishu
+
+#This code chunk uses the likert scale functions.
+
+# Double check that the columns correspond to the right question:
+# colnames(sod21)[127]
+# colnames(pigw21)[124]
+
+#Creating data sets for Q33 (In otherwords: Isolating the responses of Q33 in the two surveys and adding this to a compiled data set, one for each survey)
+sod21Q33 = as.data.frame(dplyr::select(sod21,127))
+sod21Pile = cbind(sod21Pile, sod21Q33)
+
+pigw21Q33 = as.data.frame(dplyr::select(pigw21, 124))
+pigw21Pile = cbind(pigw21Pile, pigw21Q33)
+
+
+#Setting columnnames and storing the question for Q33
+colnames(sod21Q33) = c('Q33')
+colnames(pigw21Q33) = c('Q33')
+Q33 = 'How would you rate the importance of the following with reference to determining the quality of an openly accessible data set? The data are available from a publicly available repository.'
+
+#Setting the answer options to Q33.
+Q33_levels = c("Extremely important", "Somewhat important",
+               "Moderately important", "Slightly important",
+               "Not at all important", "I don't know")
+
+#The Pigweb scale is correctly formatted for this question (Q33), thus no need to reverse the question.
+#pigw21Q33$Q33 = reverseCode(pigw21Q33$Q33) 
+
+Q33_data = format_question_likert(sod21Q33$Q33, #Making the answers to Q33 in the two questionnaires comparable, merging them to one data frame 
+                                  pigw21Q33$Q33,
+                                  Q33_levels)
+
+plot_likert(Q33_data,  #Plotting the Level of importance
+            Q33_levels,
+            Q33,
+            "Level of importance")
+
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hyptohesis that the two populations are the same. 
+
+SvPQ33 = ks.test(Q33_data$response[Q33_data$survey == "SoD"],
+                 Q33_data$response[Q33_data$survey == "PigWeb"],
+                 ifresult = FALSE) #Kolmogorov-Smirnov test for Q33
+SvPQ33
+```
