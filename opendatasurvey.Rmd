@@ -1224,7 +1224,7 @@ Qleonie1 = "How would you rate the importance of new data (released within the y
 colnames(pigw21Qleonie1 ) = c('Qleonie1 ')
 colnames(sod21Qleonie1 ) = c('Qleonie1 ')
 
-Qleonie1_levels = c("Extremely important", "Somewhat important", "Moderately important","Slightly important","Not at all important","I don´t know","No answer") #The different levels/categories of the questions
+Qleonie1_levels = c("Extremely important", "Somewhat important", "Moderately important","Slightly important","Not at all important","I don´t know") #The different levels/categories of the questions
 
 Qleonie1_data = format_question_single_choice(sod21Qleonie1$Qleonie1, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
                                          pigw21Qleonie1$Qleonie1,
