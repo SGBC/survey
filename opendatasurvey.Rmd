@@ -1204,4 +1204,34 @@ plot_single_choice(Q45_data, #Plotting the responses
                    Q45,
                    "Response")
 ```
+#Léonie assignement
 
+"Questions.about.your.usage.of.other.data.sources
+How.would.you.rate.the.importance.of.each.of.the.following.with.reference.to.determining.the.quality.of.an.openly.accessible.data.set..Use.the.arrows.below.to.go.to.next.statement..there.is.a.total.of.12.statements.to.respond.to.here.....The.data.are.new..e.g..released.within.the.last.year."
+
+```{r Leonie question_1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE}
+#Creating data sets for column 125 and 128
+pigw21Qleonie1 = as.data.frame(dplyr::select(pigw21, 125))
+pigw21Pile = cbind(pigw21Pile, pigw21Qleonie1)
+
+sod21Qleonie1 = as.data.frame(dplyr::select(sod21, 128))
+sod21Pile = cbind(sod21Pile, sod21Qleonie1)
+
+
+
+#Saving the Question text and changing the column name with the responses in the two data frames to Q45 
+Qleonie1 = "How would you rate the importance of new data (released within the year) with reference to determining the quality of an openly accessible data set? "
+colnames(pigw21Qleonie1 ) = c('Qleonie1 ')
+colnames(sod21Qleonie1 ) = c('Qleonie1 ')
+
+Qleonie1_levels = c("Extremely important", "Somewhat important", "Moderately important","Slightly important","Not at all important","I don´t know","No answer") #The different levels/categories of the questions
+
+Qleonie1_data = format_question_single_choice(sod21Qleonie1$Qleonie1, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
+                                         pigw21Qleonie1$Qleonie1,
+                                         Qleonie1_levels)
+
+plot_single_choice(Qleonie1_data, #Plotting the responses
+                   Qleonie1_levels,
+                  Qleonie1,
+                   "Response")
+```
