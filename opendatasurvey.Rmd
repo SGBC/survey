@@ -12,17 +12,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # About this report
-This report is designed with two purposes in mind. 
+This report is designed with two purposes in mind.
 
-If read directly without opening the code chunks the report provides a comparative analysis of the State of Open Data survey 2021 published by Digital Science (https://doi.org/10.6084/m9.figshare.17081231) and a community specific survey to survey the State of Open Data and attitudes towards FAIR data policies conducted by the Pigweb consortium. The Pigweb study is built on the template provided by the State of Open Data Survey to maximize the comparability between the pig research community participating in Pigweb and the much larger study conducted by Digital Science and Springer Nature. It does however also contain some specific questions regarding experiences with infrastructure and services supporting FAIR data.
+If read directly without opening the code chunks the report provides a comparative analysis of the State of Open Data survey 2021 published by Digital Science (<https://doi.org/10.6084/m9.figshare.17081231>) and a community specific survey to survey the State of Open Data and attitudes towards FAIR data policies conducted by the Pigweb consortium. The Pigweb study is built on the template provided by the State of Open Data Survey to maximize the comparability between the pig research community participating in Pigweb and the much larger study conducted by Digital Science and Springer Nature. It does however also contain some specific questions regarding experiences with infrastructure and services supporting FAIR data.
 
+Opening the code chunks provided in the document or downloading the github repository (<https://github.com/SGBC/survey>) enables researchers to copy the report and reuse it as a template for their own comparative studies. The document is divided into a number of code chunks with data pruning and functions at the top followed by the report with the code chunks generating data interspersed between them. The code in each chunk evaluating questions can be broken down into four parts:
 
-Opening the code chunks provided in the document or downloading the github repository (https://github.com/SGBC/survey) enables researchers to copy the report and reuse it as a template for their own comparative studies. The document is divided into a number of code chunks with data pruning and functions at the top followed by the report with the code chunks generating data interspersed between them. The code in each chunk evaluating questions can be broken down into four parts:
-
-1. Parsing the response tables from each questionnaire.
-2. Recoding the responses from the two different surveys into the same format using functions in the file plotting_functions.R
-3. Plotting response data with functions in the file plotting_functions.R.
-4. Testing for statistic significance and other numeric analysis if applicable.
+1.  Parsing the response tables from each questionnaire.
+2.  Recoding the responses from the two different surveys into the same format using functions in the file plotting_functions.R
+3.  Plotting response data with functions in the file plotting_functions.R.
+4.  Testing for statistic significance and other numeric analysis if applicable.
 
 The code is release under a GNU General Public License v3.0 and is written to be as easily accessible as possible for students, researchers or other people who need to quickly parse and analyse a large study.
 
@@ -42,7 +41,6 @@ install.packages("readxl")
 install.packages("ufs")
 install.packages("writexl")
 ```
-
 
 ```{r prep_02, echo=F, eval = T, message=FALSE, warning=FALSE}
 # set options
@@ -101,13 +99,15 @@ pigw21Pile = dplyr::select(pigw21,1:3)
 ```
 
 ## Data in the survey
+
 The questionnaire contain over 200 different answers per respondent and can be broken down into 6 different categories of questions, questions about the respondent, questions about the respondents research data, questions about the respondents usage of data and finally views on credit and recognition of data. There is also a final section on information about the respondents to the Pigweb survey which is not publicly shared as it would provide the means to identify the respondents of the survey. For visualizing the responses there are three types of questions which is each processed by a separate set of functions. The question types are:
 
-1. Likert scale questions, usually with a five point scale going from "I strongly disagree" to "I strongly agree". These are reported using an empirical cumulative distribution function with one line each for the State of Open Data and the Pigweb survey. Hypothesis testing with calculation of p-values is done with a Kolmogorov-Smirnov test with the alternate hypothesis being that respondents are drawn from two populations with different preferences
-2. Single choice questions, selecting between different options the respondent select the most fitting one. A frequency bar plot with the different alternatives is used to visualize these responses.
-3. Multiple choice questions, respondents may select multiple answers to the question.A frequency bar plot with the different alternatives is used to visualize these responses with the frequency being the number of respondents who selected an answer divided by the number of respondents.
+1.  Likert scale questions, usually with a five point scale going from "I strongly disagree" to "I strongly agree". These are reported using an empirical cumulative distribution function with one line each for the State of Open Data and the Pigweb survey. Hypothesis testing with calculation of p-values is done with a Kolmogorov-Smirnov test with the alternate hypothesis being that respondents are drawn from two populations with different preferences
+2.  Single choice questions, selecting between different options the respondent select the most fitting one. A frequency bar plot with the different alternatives is used to visualize these responses.
+3.  Multiple choice questions, respondents may select multiple answers to the question.A frequency bar plot with the different alternatives is used to visualize these responses with the frequency being the number of respondents who selected an answer divided by the number of respondents.
 
 ## About the respondents
+
 The first three questions of the surveys were about the first year of publication, primary area of research interest and international collaboration.
 
 ```{r question_1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 1"}
@@ -136,6 +136,7 @@ Q1_data = format_question_likert(sod21Q1$Q1,
                                  pigw21Q1$Q1,
                                  Q1_levels)
 ```
+
 ```{r}
 plot_likert(Q1_data,
             Q1_levels,
@@ -146,8 +147,6 @@ ks.test(Q1_data$response[Q1_data$survey == "SoD"],
         Q1_data$response[Q1_data$survey == "PigWeb"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q1
 ```
-
-
 
 ```{r question_2, echo=T, eval = T, message=FALSE, warning=FALSE, fig.cap="Figure 2"}
 #Each chunk take a number of columns from the sod21 and pigw21 dataframes and put them in a separate dataframe for processing which is numbered sequentially.
@@ -177,6 +176,7 @@ Q2KS = ks.test(Q2_data$response[Q2_data$survey == "SoD"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q2
 
 ```
+
 The proportion of respondents with over 20 years since their first publication is lower in the PigWeb survey than the State of Open Data survey but overall differences are not sufficient to reject the null hypothesis that the respondents belong to the same population(p = `r Q2KS$p.value`). As expected most PigWeb participants (N = 43) identify as Biologists (N = 28) with the remaining divided between medicine (N = 1) and "Other" where free text responses where related to veterinary sciences (N = 3), animal science (N = 6), life sciences (N = 1) or statistics and mathematics (N = 1).
 
 ```{r question_3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 3"}
@@ -230,6 +230,7 @@ pigw21Q3other = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q3other)
 
 ```
+
 Researchers participating in the PigWeb survey are to a higher degree involved in collaborations than respondents in the State of Open Data survey which is consistent with survey participants being recruited from an EU project on building infrastructure for experimental research for sustainable pig production.
 
 ```{r question_4, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 4"}
@@ -258,7 +259,6 @@ plot_multiple_choice(Q4_data,
                      Q4,
                      "Response")
 ```
-
 
 ## Views on open access and open sharing of data or other results results.
 
@@ -387,7 +387,6 @@ SQ5vSQ7= ks.test(Q5_data$response[Q5_data$survey == "SoD"],
 
 ```
 
-
 Comparing the responses for each question there are no statistically significant differences between the populations(p = `r SvPQ5$p.value`, `r SvPQ6$p.value`, and `r SvPQ7$p.value` respectively). In both questionnaires respondents are however less likely to agree with the statement "Making all research outputs openly available should be common scholarly practice" than to the statement "Making research articles open access should be common scholarly practice" (p = `r SQ5vSQ7$p.value` the State of Open Data survey and `r PQ5vPQ7$p.value` for the PigWeb survey). The difference is markedly larger in the PigWeb survey as measured by the maximum geometric distance D between the two graphs (D = `r PQ5vPQ7$statistic` for Pigweb and D = `r SQ5vSQ7$statistic` for State of Open Data). We hypothesise that despite similar levels of support for open access publishing a higher proportion of the PigWeb participants are engaged in research together with commercial stakeholders which do not permit the open sharing of all data from studies made due to trade secrets and other immaterial property rights which will be followed up during a second phase of the PigWeb project with qualitative interviews. Researchers in PigWeb are also to a large degree of the existence of FAIR data as a concept but unfamiliar with applying it in practice.
 
 ```{r question_8, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", results=FALSE, fig.cap="Figure 8"}
@@ -432,9 +431,11 @@ SvPQ8 = ks.test(Q8_data$response[Q8_data$survey == "SoD"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q8
 
 ```
+
 In comparison with the State of Open Data survey participants are more likely to be aware of FAIR data policies but lacking in familiarity with them (p = `r SvPQ8$p.value` and D = `r SvPQ8$p.statistic`).
 
 ## Implementation of FAIR data sharing in PigWeb
+
 These questions are unique to the PigWeb survey and included as the European Commission policy is to promote and support FAIR data. In many cases FAIR data is also open data but in many sectors collaborations, immaterial rights and other requirements limit the ability to openly share all data and the PigWeb survey therefore include current work on FAIR data as supported by the EU commission and many national research organisations as well as the questions used in the State of Open Data survey.
 
 ```{r question_9, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 9", out.width="50%"}
@@ -457,6 +458,7 @@ plot_single_choice(Q9_data,
                    Q9,
                    "Area of interest")
 ```
+
 ```{r question_10, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 10", out.width="50%"}
 #This is a single choice question without an "other" with responses only in the PigWeb survey.
 
@@ -500,10 +502,10 @@ plot_single_choice(Q11_data,
                    Q11,
                    "Area of interest")
 ```
+
 Researchers show the highest degree of uncertainty regarding FAIR policies on a national level (`r Q9_data[2,5]` %) but overall roughly a third of the respondents report that there is a FAIR data policy in place and they are aware of it. This is significantly lower than the percentage of researchers reporting that they are familiar with FAIR in the PigWeb survey (17 %, displayed in figure 8) but lower than the number of researchers reporting that they are aware of FAIR (71 %, displayed in figure 8). A small number of researchers also report that they confidently state that there is no FAIR policy in place at the university (14 %, N = 6) or enforced by their main funder (10 %, N = 4).
 
 ## Data curation and management
-
 
 ```{r question_12, echo=F, eval = T, message=FALSE, warning=FALSE, results=TRUE, fig.cap="Figure 12"}
 #So this is a single choice question with an "other".
@@ -560,6 +562,7 @@ pigw21Q12other = as.data.frame(dplyr::select(pigw21, 22))
 pigw21Pile = cbind(pigw21Pile, pigw21Q12other)
 
 ```
+
 ```{r question_13, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 13"}
 #This code chunk uses the multiple choice functions.
 Q13_levels = c("Yes, it was a requirement of my current funder",
@@ -589,7 +592,7 @@ plot_multiple_choice(Q13_data,
                      "Response")
 ```
 
-Only a single researcher report sharing data to be FAIR and open but in total half the researchers report the data as being at least somewhat open and FAIR-compliant. 
+Only a single researcher report sharing data to be FAIR and open but in total half the researchers report the data as being at least somewhat open and FAIR-compliant.
 
 ```{r question_14, echo=T, eval = T, message=FALSE, warning=FALSE, fig.show="hold", results=FALSE, fig.cap="Figure 14"}
 
@@ -620,7 +623,6 @@ plot_likert(Q14_data,
             "Level of agreement")
 
 ```
-
 
 ```{r question_15, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 15"}
 #This code chunk uses the multiple choice functions.
@@ -697,7 +699,6 @@ SvPQ16 = ks.test(Q16_data$response[Q16_data$survey == "SoD"],
 ```
 
 # Question 17
-
 
 ```{r question_17, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 17"}
 #Creating data sets for Q17
@@ -787,7 +788,6 @@ sum(is.na(Q18_data$response))
 
 # Question 19
 
-
 ```{r question_Q19, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure Q19"}
 #Paulina question 2
 #To what extent are you comfortable with others using your data for the following
@@ -827,7 +827,6 @@ ks.test(Q19_data$response[Q19_data$survey == "SoD"],
         ifresult = FALSE) #Kolmogorov-Smirnov test for Q19
 
 ```
-
 
 # Question 20
 
@@ -943,8 +942,6 @@ pigw21Q21other = as.data.frame(dplyr::select(pigw21, 1))
 pigw21Pile = cbind(pigw21Pile, pigw21Q21other)
 ```
 
-
-
 ```{r question_Q22, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure Q22"}
 #What areas (if any) do you feel you need help with in regard to making your research data openly available.
 #This code chunk uses the multiple choice functions.
@@ -979,13 +976,7 @@ plot_multiple_choice(Q22_data,
 
 # Question 27
 
-How do you share your research data with a public audience. Please select all that apply
-* Institutional repository
-* Funder repository
-* External repository
-* Blog/Website
-* Cloud file sharing
-* Other (please specify)
+How do you share your research data with a public audience. Please select all that apply \* Institutional repository \* Funder repository \* External repository \* Blog/Website \* Cloud file sharing \* Other (please specify)
 
 ```{r question_27, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 27", out.width="50%"}
 
@@ -1052,16 +1043,9 @@ sod21Pile = cbind(sod21Pile, sod21Q27other)
 
 ```
 
-
 # Question 29
 
-How, if at all, do you monitor the use of data that you share publicly?
-* Citations
-* Resolutions
-* Download
-* Altmetrics
-* I do not monitor the use of my data
-* Other(please specify)
+How, if at all, do you monitor the use of data that you share publicly? \* Citations \* Resolutions \* Download \* Altmetrics \* I do not monitor the use of my data \* Other(please specify)
 
 ```{r question_29, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 29", out.width="50%"}
 
@@ -1128,11 +1112,9 @@ sod21Pile = cbind(sod21Pile, sod21Q29other)
 
 ```
 
-# Question 30 
-Have you ever been involved in a collaboration as a result of data you have previously shared?
-* Yes
-* No
-* I don't know
+# Question 30
+
+Have you ever been involved in a collaboration as a result of data you have previously shared? \* Yes \* No \* I don't know
 
 ```{r question_30, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 30", out.width="50%"}
 
@@ -1181,6 +1163,8 @@ plot_single_choice(Q30_data,
 
 ```
 
+# Question 31
+
 ```{r question_31, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 45"}
 #Creating data sets for Q31/Isolating the responses from Q31
 pigw21Q31 = as.data.frame(dplyr::select(pigw21, 114))
@@ -1206,3 +1190,96 @@ plot_single_choice(Q31_data, #Plotting the responses
                    "Response")
 ```
 
+# Question 32
+
+**Would you like more guidance on how to comply with the policies of any of the below on making your research data openly available?**
+
+
+```{r question_32, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 32"}
+
+# Answered by Yishu
+
+#This code chunk uses the multiple choice functions.
+Q32_levels = c("Funder",
+              "Institution",
+              "Department or faculty",
+              "Government",
+              "None of the above")
+n_columns = length(Q32_levels)
+
+# Double check that the columns correspond to the right question:
+# colnames(sod21)[96]
+# colnames(pigw21)[76]
+
+sod21Q32 = as.data.frame(dplyr::select(sod21, (96:sum(96,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21Q32)
+
+pigw21Q32 = as.data.frame(dplyr::select(pigw21, (76:sum(76,n_columns-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21Q32)
+
+Q32 = 'Would you like more guidance on how to comply with the policies of any of the below on making your research data openly available?'
+
+Q32_data = format_question_multiple_choice(sod21Q32,
+                                          pigw21Q32,
+                                          Q32_levels)
+
+plot_multiple_choice(Q32_data,
+                     Q32_levels,
+                     Q32,
+                     "Response")
+```
+
+
+# Question 33
+
+**How would you rate the importance of the following with reference to determining the quality of an openly accessible data set? The data are available from a publicly available repository.**
+  
+```{r question_33, echo=T, eval = T, message=FALSE, warning=FALSE, results=T, fig.cap="Figure 33"}
+
+# Answered by Yishu
+
+#This code chunk uses the likert scale functions.
+
+# Double check that the columns correspond to the right question:
+# colnames(sod21)[127]
+# colnames(pigw21)[124]
+
+#Creating data sets for Q33 (In otherwords: Isolating the responses of Q33 in the two surveys and adding this to a compiled data set, one for each survey)
+sod21Q33 = as.data.frame(dplyr::select(sod21,127))
+sod21Pile = cbind(sod21Pile, sod21Q33)
+
+pigw21Q33 = as.data.frame(dplyr::select(pigw21, 124))
+pigw21Pile = cbind(pigw21Pile, pigw21Q33)
+
+
+#Setting columnnames and storing the question for Q33
+colnames(sod21Q33) = c('Q33')
+colnames(pigw21Q33) = c('Q33')
+Q33 = 'How would you rate the importance of the following with reference to determining the quality of an openly accessible data set? The data are available from a publicly available repository.'
+
+#Setting the answer options to Q33.
+Q33_levels = c("Extremely important", "Somewhat important",
+               "Moderately important", "Slightly important",
+               "Not at all important", "I don't know")
+
+#The Pigweb scale is correctly formatted for this question (Q33), thus no need to reverse the question.
+#pigw21Q33$Q33 = reverseCode(pigw21Q33$Q33) 
+
+Q33_data = format_question_likert(sod21Q33$Q33, #Making the answers to Q33 in the two questionnaires comparable, merging them to one data frame 
+                                  pigw21Q33$Q33,
+                                  Q33_levels)
+
+plot_likert(Q33_data,  #Plotting the Level of importance
+            Q33_levels,
+            Q33,
+            "Level of importance")
+
+
+#This section test for if there is statistically significant difference in the respondent groups¨
+#with the null hyptohesis that the two populations are the same. 
+
+SvPQ33 = ks.test(Q33_data$response[Q33_data$survey == "SoD"],
+                 Q33_data$response[Q33_data$survey == "PigWeb"],
+                 ifresult = FALSE) #Kolmogorov-Smirnov test for Q33
+SvPQ33
+```
