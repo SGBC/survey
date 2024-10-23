@@ -1235,3 +1235,25 @@ plot_single_choice(Qleonie1_data, #Plotting the responses
                   Qleonie1,
                    "Response")
 ```
+About.your.research.data...Are.you.aware.of.any.of.the.following.data.or.code.sharing.platforms....EOSC..European.Open.Science.Cloud.
+
+```{r Leonie question_2, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE}
+#This is a single choice question without an "other" with responses only in the PigWeb survey.
+
+pigw21Qleonie2 = as.data.frame(dplyr::select(pigw21, 89))
+
+
+Qleonie2 = 'About your research.data, are you aware of EOSC (European Open Science Cloud)'
+colnames(pigw21Qleonie2) = c('Qleonie2')
+
+Qleonie2_levels = c("No", "Yes but I have not used it ", "Yes and I have used it")
+
+#The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
+Qleonie2_data = format_question_single_choice_pigweb(pigw21Qleonie2$Qleonie2,
+                                       Qleonie2_levels)
+
+plot_single_choice(Qleonie2_data,
+                   Qleonie2_levels,
+                   Qleonie2 ,
+                   "Answers")
+```
