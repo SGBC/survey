@@ -1205,4 +1205,63 @@ plot_single_choice(Q31_data, #Plotting the responses
                    Q31,
                    "Response")
 ```
+# Question 26
+```{r}
+
+#Creating data sets for Q26/Isolating the responses from Q26
+pigw21Q26 = as.data.frame(dplyr::select(pigw21, 97))
+pigw21Pile = cbind(pigw21Pile, pigw21Q26)
+
+sod21Q26 = as.data.frame(dplyr::select(sod21, 31))
+sod21Pile = cbind(sod21Pile, sod21Q26)
+
+#Saving the Question text and changing the column name with the responses in the two data frames to Q26 
+Q26 = "At which point during the research cycle, if at all, do you make your data available?"
+colnames(pigw21Q26) = c('Q26')
+colnames(sod21Q26) = c('Q26')
+
+#Changing names so answers from both surveys match
+pigw21Q26$Q26[pigw21Q26$Q26 == "1"] <- "Immediately at the point when data is collected"
+pigw21Q26$Q26[pigw21Q26$Q26 == "2"] <- "When the research is complete"
+pigw21Q26$Q26[pigw21Q26$Q26 == "3"] <- "When submitting a research article"
+pigw21Q26$Q26[pigw21Q26$Q26 == "4"] <- "On publication of the research"
+  pigw21Q26$Q26[pigw21Q26$Q26 == "5"] <- "Upon request from others"
+  pigw21Q26$Q26[pigw21Q26$Q26 == "6"] <- "I do not share my data beyond my immediate collaborators"
+
+
+totalQ26 <- rbind(pigw21Q26, sod21Q26)
+
+totalQ26 <- na.omit(totalQ26)
+
+#sum(sod21Q26$Q26=="")
+
+#table(sod21Q26$Q26)
+
+merged_Q26 <- data.frame(
+    Q26 = c(1:6), 
+    Response = c("Immediately at the point when data is collected", "When the research is complete", 
+                    "When submitting a research article", "On publication of the research", 
+                    "Upon request from others", "I do not share my data beyond my immediate collaborators"),
+    stringsAsFactors = FALSE
+)
+
+merged_Q26$count <- c("192", "631", 
+                       "836", "1337",
+                       "943", "428")
+
+merged_Q26$count <- as.numeric(as.character(merged_Q26$count))
+merged_Q26$Percent <- merged_Q26$count/sum(merged_Q26$count)*100
+
+library(ggplot2)
+
+ggplot(data = merged_Q26, mapping = aes(x = Response, y = Percent, fill = Response)) + 
+  geom_bar(stat = "identity" ) +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+          ggtitle("At which point during the research cycle, if at all, 
+                  do you make your data available?") +
+            labs(y= "Percent", x = "Response (PigWeb + SoD)")
+
+
+```
 
