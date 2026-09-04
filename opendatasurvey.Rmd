@@ -977,7 +977,9 @@ plot_multiple_choice(Q22_data,
                      "Response")
 ```
 
-## Q25-GitHub - Awareness and use of GitHub
+# Question 25a
+
+GitHub - Awareness and use of GitHub
 
 ```{r question_25_github, echo=T, eval=T, message=FALSE, warning=FALSE, results=FALSE}
 
@@ -1009,7 +1011,9 @@ plot_single_choice(
 
 
 
-## Q25-Zenodo - Awareness and use of Zenodo 
+# Question 25b
+
+Zenodo - Awareness and use of Zenodo 
  
 ```{r question_25_zenodo, echo=T, eval=T, message=FALSE, warning=FALSE, results=FALSE} 
  
@@ -1315,156 +1319,7 @@ plot_single_choice(Q31_data, #Plotting the responses
                    "Response")
 ```
 
-# Question 34
 
-```{r question_Q34, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure Q34"}
-pigw21Q34 = as.data.frame(dplyr::select(pigw21, 126))
-pigw21Pile = cbind(pigw21Pile, pigw21Q34)
-
-#Setting column names and storing the question
-colnames(pigw21Q34) = c('Q34')
-Q34 = 'How would you rate the importance of each of the following with reference to determining the quality of an openly accessible data set? : The data are available from a publicly available repository.'
-
-#Setting the answer options to Question Q19.
-Q34_levels = c("Extremely important", "Somewhat important", "Moderately important", "Slightly importat", "Not at all important", "I don't know")
-
-sod21Q34 = as.data.frame(dplyr::select(sod21,129))
-sod21Pile = cbind(sod21Pile, sod21Q34)
-colnames(sod21Q34) = c('Q34')
-
-
-Q34_data = format_question_likert(sod21Q34$Q34,
-                                 pigw21Q34$Q34,
-                                 Q34_levels)
-
-#Likert plot
-plot_likert(Q34_data,
-            Q34_levels,
-            Q34,
-            "Level of importance")
-
-#This section test for if there is statistically significant difference in the respondent groups
-#with the null hypothesis that the two populations are the same. 
-
-ks.test(Q34_data$response[Q34_data$survey == "SoD"],
-        Q34_data$response[Q34_data$survey == "PigWeb"],
-        ifresult = FALSE) #Kolmogorov-Smirnov test for Q34
-
-```
-
-```{r question_QP3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP3"}
-#Paulina Q3
-#What areas (if any) do you feel you need help with in regard to making your research data openly available.
-#This code chunk uses the multiple choice functions.
-QP3_levels = c("Finding the time to manage my data",
-              "Data management plans",
-              "Copyright/Licensing of data",
-              "Data management policies",
-              "Curation of data",
-              "Finding appropiate repositories for deposition of data",
-              "None of the abobe",
-              "Other")
-n_columns = length(QP3_levels)
-
-sod21QP3 = as.data.frame(dplyr::select(sod21, (87:sum(87,n_columns,-1))))
-sod21Pile = cbind(sod21Pile, sod21QP3)
-
-pigw21QP3 = as.data.frame(dplyr::select(pigw21, (67:sum(67,n_columns-1))))
-pigw21Pile = cbind(pigw21Pile, pigw21QP3)
-
-QP3 = 'What areas (if any) do you feel you need help with in regard to making your research data openly available'
-
-
-QP3_data = format_question_multiple_choice(sod21QP3,
-                                          pigw21QP3,
-                                          QP3_levels)
-
-plot_multiple_choice(QP3_data,
-                     QP3_levels,
-                     QP3,
-                     "Response")
-```
-
-#Question 45
-
-```{r question_45, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 45"}
-#Creating data sets for Q45/Isolating the responses from Q45
-pigw21Q45 = as.data.frame(dplyr::select(pigw21, 114))
-pigw21Pile = cbind(pigw21Pile, pigw21Q45)
-
-sod21Q45 = as.data.frame(dplyr::select(sod21, 86))
-sod21Pile = cbind(sod21Pile, sod21Q45)
-
-#Saving the Question text and changing the column name with the responses in the two data frames to Q45 
-Q45 = "Have you ever been 'scooped' (i.e. have another lab published an result similar to your own before you do) as a result of data you have previously shared?"
-colnames(pigw21Q45) = c('Q45')
-colnames(sod21Q45) = c('Q45')
-
-Q45_levels = c("Yes", "No", "I don't know") #The different levels/categories of the questions
-
-Q45_data = format_question_single_choice(sod21Q45$Q45, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
-                                         pigw21Q45$Q45,
-                                         Q45_levels)
-
-plot_single_choice(Q45_data, #Plotting the responses
-                   Q45_levels,
-                   Q45,
-                   "Response")
-```
-
-#Léonie assignement
-
-"Questions.about.your.usage.of.other.data.sources How.would.you.rate.the.importance.of.each.of.the.following.with.reference.to.determining.the.quality.of.an.openly.accessible.data.set..Use.the.arrows.below.to.go.to.next.statement..there.is.a.total.of.12.statements.to.respond.to.here.....The.data.are.new..e.g..released.within.the.last.year."
-
-```{r Leonie question_1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE}
-#Creating data sets for column 125 and 128
-pigw21Qleonie1 = as.data.frame(dplyr::select(pigw21, 125))
-pigw21Pile = cbind(pigw21Pile, pigw21Qleonie1)
-
-sod21Qleonie1 = as.data.frame(dplyr::select(sod21, 128))
-sod21Pile = cbind(sod21Pile, sod21Qleonie1)
-
-
-
-#Saving the Question text and changing the column name with the responses in the two data frames to Q45 
-Qleonie1 = "How would you rate the importance of new data (released within the year) with reference to determining the quality of an openly accessible data set? "
-colnames(pigw21Qleonie1 ) = c('Qleonie1 ')
-colnames(sod21Qleonie1 ) = c('Qleonie1 ')
-
-Qleonie1_levels = c("Extremely important", "Somewhat important", "Moderately important","Slightly important","Not at all important","I don´t know") #The different levels/categories of the questions
-
-Qleonie1_data = format_question_single_choice(sod21Qleonie1$Qleonie1, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
-                                         pigw21Qleonie1$Qleonie1,
-                                         Qleonie1_levels)
-
-plot_single_choice(Qleonie1_data, #Plotting the responses
-                   Qleonie1_levels,
-                  Qleonie1,
-                   "Response")
-```
-
-About.your.research.data...Are.you.aware.of.any.of.the.following.data.or.code.sharing.platforms....EOSC..European.Open.Science.Cloud.
-
-```{r Leonie question_2, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE}
-#This is a single choice question without an "other" with responses only in the PigWeb survey.
-
-pigw21Qleonie2 = as.data.frame(dplyr::select(pigw21, 89))
-
-
-Qleonie2 = 'About your research.data, are you aware of EOSC (European Open Science Cloud)'
-colnames(pigw21Qleonie2) = c('Qleonie2')
-
-Qleonie2_levels = c("No", "Yes but I have not used it ", "Yes and I have used it")
-
-#The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
-Qleonie2_data = format_question_single_choice_pigweb(pigw21Qleonie2$Qleonie2,
-                                       Qleonie2_levels)
-
-plot_single_choice(Qleonie2_data,
-                   Qleonie2_levels,
-                   Qleonie2 ,
-                   "Answers")
-```
 
 # Question 32
 
@@ -1557,6 +1412,8 @@ SvPQ33 = ks.test(Q33_data$response[Q33_data$survey == "SoD"],
                  ifresult = FALSE) #Kolmogorov-Smirnov test for Q33
 SvPQ33
 ```
+
+
 # Question 32
 
 > **Since January 2020, have you reused any of the below as part of your research?**
@@ -1666,15 +1523,87 @@ Q33.1_data <- format_question_multiple_choice(sod21Q33.1, pigw21Q33.1, Q33.1_lev
 # 4. Character string for the x-axis label (not a separate vector, write text below)
 
 plot_multiple_choice(Q33.1_data, Q33.1_levels, Q33.1, "Response")
+```
+
+# Question 34
+
+```{r question_Q34, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure Q34"}
+pigw21Q34 = as.data.frame(dplyr::select(pigw21, 126))
+pigw21Pile = cbind(pigw21Pile, pigw21Q34)
+
+#Setting column names and storing the question
+colnames(pigw21Q34) = c('Q34')
+Q34 = 'How would you rate the importance of each of the following with reference to determining the quality of an openly accessible data set? : The data are available from a publicly available repository.'
+
+#Setting the answer options to Question Q19.
+Q34_levels = c("Extremely important", "Somewhat important", "Moderately important", "Slightly importat", "Not at all important", "I don't know")
+
+sod21Q34 = as.data.frame(dplyr::select(sod21,129))
+sod21Pile = cbind(sod21Pile, sod21Q34)
+colnames(sod21Q34) = c('Q34')
 
 
-```{r question_37, echo=T, eval = T, message=FALSE, warning=FALSE, results=T, fig.cap="Figure 33"}
+Q34_data = format_question_likert(sod21Q34$Q34,
+                                 pigw21Q34$Q34,
+                                 Q34_levels)
+
+#Likert plot
+plot_likert(Q34_data,
+            Q34_levels,
+            Q34,
+            "Level of importance")
+
+#This section test for if there is statistically significant difference in the respondent groups
+#with the null hypothesis that the two populations are the same. 
+
+ks.test(Q34_data$response[Q34_data$survey == "SoD"],
+        Q34_data$response[Q34_data$survey == "PigWeb"],
+        ifresult = FALSE) #Kolmogorov-Smirnov test for Q34
+
+```
+
+```{r question_QP3, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure QP3"}
+#Paulina Q3
+#What areas (if any) do you feel you need help with in regard to making your research data openly available.
+#This code chunk uses the multiple choice functions.
+QP3_levels = c("Finding the time to manage my data",
+              "Data management plans",
+              "Copyright/Licensing of data",
+              "Data management policies",
+              "Curation of data",
+              "Finding appropiate repositories for deposition of data",
+              "None of the abobe",
+              "Other")
+n_columns = length(QP3_levels)
+
+sod21QP3 = as.data.frame(dplyr::select(sod21, (87:sum(87,n_columns,-1))))
+sod21Pile = cbind(sod21Pile, sod21QP3)
+
+pigw21QP3 = as.data.frame(dplyr::select(pigw21, (67:sum(67,n_columns-1))))
+pigw21Pile = cbind(pigw21Pile, pigw21QP3)
+
+QP3 = 'What areas (if any) do you feel you need help with in regard to making your research data openly available'
+
+
+QP3_data = format_question_multiple_choice(sod21QP3,
+                                          pigw21QP3,
+                                          QP3_levels)
+
+plot_multiple_choice(QP3_data,
+                     QP3_levels,
+                     QP3,
+                     "Response")
+```
+
+# Question 37
+
+```{r question_37, echo=T, eval = T, message=FALSE, warning=FALSE, results=T, fig.cap="Figure 37"}
 
 # Answered by Marios
-sod21
-pigw21
-colnames(sod21)[130]
-colnames(pigw21)[127]
+# sod21
+# pigw21
+# colnames(sod21)[130]
+# colnames(pigw21)[127]
 #Keep only the Q37
 sod21Q37 = as.data.frame(dplyr::select(sod21, 130))
 sod21Pile = cbind(sod21Pile, sod21Q37)
@@ -1703,13 +1632,17 @@ plot_likert(Q37_data,  #Plotting the Level of importance
             "Level of importance")
 ```
 
-```{r question_38, echo=T, eval = T, message=FALSE, warning=FALSE, results=T, fig.cap="Figure 33"}
+
+
+# Question 38 
+
+```{r question_38, echo=T, eval = T, message=FALSE, warning=FALSE, results=T, fig.cap="Figure 38"}
 
 # Answered by Marios
-sod21
-pigw21
-colnames(sod21)[131]
-colnames(pigw21)[128]
+# sod21
+# pigw21
+# colnames(sod21)[131]
+# colnames(pigw21)[128]
 #Keep only the Q38
 sod21Q38 = as.data.frame(dplyr::select(sod21, 131))
 sod21Pile = cbind(sod21Pile, sod21Q38)
@@ -1742,6 +1675,88 @@ plot_likert(
   Q38_levels,
   Q38,
   "Level of importance")
+```
+
+
+# Question 45
+
+```{r question_45, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE, fig.cap="Figure 45"}
+#Creating data sets for Q45/Isolating the responses from Q45
+pigw21Q45 = as.data.frame(dplyr::select(pigw21, 114))
+pigw21Pile = cbind(pigw21Pile, pigw21Q45)
+
+sod21Q45 = as.data.frame(dplyr::select(sod21, 86))
+sod21Pile = cbind(sod21Pile, sod21Q45)
+
+#Saving the Question text and changing the column name with the responses in the two data frames to Q45 
+Q45 = "Have you ever been 'scooped' (i.e. have another lab published an result similar to your own before you do) as a result of data you have previously shared?"
+colnames(pigw21Q45) = c('Q45')
+colnames(sod21Q45) = c('Q45')
+
+Q45_levels = c("Yes", "No", "I don't know") #The different levels/categories of the questions
+
+Q45_data = format_question_single_choice(sod21Q45$Q45, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
+                                         pigw21Q45$Q45,
+                                         Q45_levels)
+
+plot_single_choice(Q45_data, #Plotting the responses
+                   Q45_levels,
+                   Q45,
+                   "Response")
+```
+
+# Léonie assignement
+
+"Questions.about.your.usage.of.other.data.sources How.would.you.rate.the.importance.of.each.of.the.following.with.reference.to.determining.the.quality.of.an.openly.accessible.data.set..Use.the.arrows.below.to.go.to.next.statement..there.is.a.total.of.12.statements.to.respond.to.here.....The.data.are.new..e.g..released.within.the.last.year."
+
+```{r Leonie question_1, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE}
+#Creating data sets for column 125 and 128
+pigw21Qleonie1 = as.data.frame(dplyr::select(pigw21, 125))
+pigw21Pile = cbind(pigw21Pile, pigw21Qleonie1)
+
+sod21Qleonie1 = as.data.frame(dplyr::select(sod21, 128))
+sod21Pile = cbind(sod21Pile, sod21Qleonie1)
+
+
+
+#Saving the Question text and changing the column name with the responses in the two data frames to Q45 
+Qleonie1 = "How would you rate the importance of new data (released within the year) with reference to determining the quality of an openly accessible data set? "
+colnames(pigw21Qleonie1 ) = c('Qleonie1 ')
+colnames(sod21Qleonie1 ) = c('Qleonie1 ')
+
+Qleonie1_levels = c("Extremely important", "Somewhat important", "Moderately important","Slightly important","Not at all important","I don´t know") #The different levels/categories of the questions
+
+Qleonie1_data = format_question_single_choice(sod21Qleonie1$Qleonie1, #Making the answers to Q45 in the two questionnaires comparable, merging them to one data frame 
+                                         pigw21Qleonie1$Qleonie1,
+                                         Qleonie1_levels)
+
+plot_single_choice(Qleonie1_data, #Plotting the responses
+                   Qleonie1_levels,
+                  Qleonie1,
+                   "Response")
+```
+
+About.your.research.data...Are.you.aware.of.any.of.the.following.data.or.code.sharing.platforms....EOSC..European.Open.Science.Cloud.
+
+```{r Leonie question_2, echo=T, eval = T, message=FALSE, warning=FALSE, results=FALSE}
+#This is a single choice question without an "other" with responses only in the PigWeb survey.
+
+pigw21Qleonie2 = as.data.frame(dplyr::select(pigw21, 89))
+
+
+Qleonie2 = 'About your research.data, are you aware of EOSC (European Open Science Cloud)'
+colnames(pigw21Qleonie2) = c('Qleonie2')
+
+Qleonie2_levels = c("No", "Yes but I have not used it ", "Yes and I have used it")
+
+#The function is given a 0 instead of the column expected form the SoD survey as there is no question in it.
+Qleonie2_data = format_question_single_choice_pigweb(pigw21Qleonie2$Qleonie2,
+                                       Qleonie2_levels)
+
+plot_single_choice(Qleonie2_data,
+                   Qleonie2_levels,
+                   Qleonie2 ,
+                   "Answers")
 ```
 
 
@@ -1792,7 +1807,7 @@ plot_single_choice(Q55_data,
                    "Response")
 ```
 
-### Question 56
+# Question 56
 
 **Were you able to reuse the dataset for your intended purpose?**
 
@@ -1831,6 +1846,7 @@ plot_single_choice(Q56_data,
                    Q56,
                    "Response")
 ```
+
 # Question 59
 
 **Do you think researchers currently get sufficient credit for sharing data?**
